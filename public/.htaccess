@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Base del proyecto
+RewriteBase /cmi/public/
+
+# Si no es archivo o carpeta
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todo a index.php
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
