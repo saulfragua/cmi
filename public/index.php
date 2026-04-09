@@ -30,6 +30,7 @@ spl_autoload_register(function ($class) {
         ROOT . '/app/controllers/',
         ROOT . '/app/controllers/admin/',
         ROOT . '/app/controllers/web/',
+        ROOT . '/app/controllers/operador/',
         ROOT . '/app/models/'
     ];
 
@@ -52,22 +53,22 @@ $router = new Router();
 // 🌐 RUTAS DEL SISTEMA
 // --------------------------------------------
 
-// Públicas
+// ================= PÚBLICAS =================
 $router->get('/', 'PaginaController@inicio');
 $router->get('/nosotros', 'PaginaController@nosotros');
 $router->get('/requisitos', 'PaginaController@requisitos');
 
-// Autenticación
+// ================= AUTENTICACIÓN =================
 $router->get('/login', 'AuthController@login');
 $router->post('/login', 'AuthController@autenticar');
-
-// Dashboard
-$router->get('/admin', 'DashboardController@index');
-
-// (Opcional) Logout
 $router->get('/logout', 'AuthController@logout');
 
-// Incorporate
+// ================= DASHBOARD =================
+$router->get('/admin', 'DashboardController@index');
+$router->get('/incorporaciones', 'IncorporacionesController@index');
+$router->get('/operadores', 'OperadoresController@index');
+
+// ================= INCORPORACIÓN =================
 $router->get('/incorporate', 'IncorporateController@index');
 $router->get('/incorporate/formulario', 'IncorporateController@formulario');
 $router->post('/incorporate/guardar', 'IncorporateController@guardar');

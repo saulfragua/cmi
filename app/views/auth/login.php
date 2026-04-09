@@ -22,9 +22,8 @@
         ACCESO CMI
     </h2>
 
-    <form action="/cmi/public/index.php?url=login/autenticar"
-          method="POST"
-          class="space-y-5">
+    <form action="<?= BASE_URL ?>/login" method="POST" class="space-y-5">
+
 
         <input type="text" name="codigo" placeholder="Código"
                class="w-full bg-black border border-[#333] px-4 py-2 text-white">

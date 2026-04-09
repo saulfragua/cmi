@@ -57,7 +57,7 @@
             <!-- VIDEO 1 -->
             <div class="bg-black/70 border border-[#222] rounded-lg overflow-hidden">
                 <iframe class="w-full h-64"
-                    src="https://www.youtube.com/embed/VIDEO_ID"
+                    src="https://www.youtube.com/embed/i3dNSymW7Fk"
                     title="Video táctico"
                     frameborder="0"
                     allowfullscreen>
@@ -72,7 +72,7 @@
             <!-- VIDEO 2 -->
             <div class="bg-black/70 border border-[#222] rounded-lg overflow-hidden">
                 <iframe class="w-full h-64"
-                    src="https://www.youtube.com/embed/VIDEO_ID"
+                    src="https://www.youtube.com/embed/CQmzqxrYAX0"
                     title="Entrenamiento"
                     frameborder="0"
                     allowfullscreen>

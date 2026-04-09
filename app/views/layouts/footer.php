@@ -192,6 +192,7 @@
 <script src="/cmi/public/assets/js/incorporate.js"></script>
 <script src="/cmi/public/assets/js/login.js"></script>
 <script src="/cmi/public/assets/js/navbar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 // Función para abrir el modal del reglamento
