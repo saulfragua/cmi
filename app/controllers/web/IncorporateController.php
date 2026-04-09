@@ -10,26 +10,26 @@ class incorporateController
   }
 
 
-  public function guardar()
-  {
+public function guardar()
+{
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-      $data = [
-        'nombre' => $_POST['nombre'] ?? '',
-        'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?? '',
-        'pais' => $_POST['pais'] ?? '',
-        'telefono' => $_POST['telefono'] ?? ''
-      ];
+        if (!isset($_POST['normas']) || !isset($_POST['datos'])) {
+            die("❌ Debes aceptar las normas y el tratamiento de datos");
+        }
 
-      $modelo = new Formulario();
-      $modelo->guardar($data);
+        $modelo = new Formulario();
 
-      header("Location: " . BASE_URL . "");
-      exit;
+        $modelo->crear([
+            'nombre' => $_POST['nombre'] ?? '',
+            'fecha' => $_POST['fecha_nacimiento'] ?? '',
+            'pais' => $_POST['pais'] ?? '',
+            'telefono' => $_POST['telefono'] ?? '',
+            'motivo' => $_POST['motivo'] ?? ''
+        ]);
+
+        header("Location: " . BASE_URL);
+        exit;
     }
-    
-    if (!isset($_POST['normas']) || !isset($_POST['datos'])) {
-      die("❌ Debes aceptar las normas y el tratamiento de datos");
-    }
-  }
+}
 }

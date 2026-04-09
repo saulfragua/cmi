@@ -72,6 +72,12 @@ $router->get('/operadores', 'OperadoresController@index');
 $router->get('/incorporate', 'IncorporateController@index');
 $router->get('/incorporate/formulario', 'IncorporateController@formulario');
 $router->post('/incorporate/guardar', 'IncorporateController@guardar');
+
+// ================= ADMIN INCORPORACIONES =================
+$router->get('/admin/incorporaciones', 'IncorporacionesController@index');
+$router->post('/admin/incorporaciones/guardar', 'IncorporacionesController@guardar');
+$router->post('/admin/incorporaciones/actualizarEstado', 'IncorporacionesController@actualizarEstado');
+$router->get('/admin/incorporaciones/eliminar', 'IncorporacionesController@eliminar');
 // --------------------------------------------
 // ▶️ EJECUTAR APLICACIÓN
 // --------------------------------------------

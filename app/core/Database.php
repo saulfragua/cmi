@@ -8,7 +8,7 @@ class Database {
     private $host = "localhost";
     private $db_name = "cmi";
     private $username = "root";
-    private $password = "Schedule0506*";
+    private $password = "";
     private $charset = "utf8mb4";
 
     private function __construct() {
