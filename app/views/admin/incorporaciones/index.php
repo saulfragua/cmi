@@ -1,184 +1,330 @@
-<div class="p-6 text-white">
+<div class="p-3 md:p-4 text-white bg-black min-h-screen">
 
-    <h1 class="text-2xl mb-4">📋 Panel de Incorporaciones</h1>
+    <?php
+    function obtenerCodigoPais($pais) {
+        $mapa = [
+            'Colombia' => '57',
+            'Argentina' => '54',
+            'México' => '52',
+            'Mexico' => '52',
+            'Perú' => '51',
+            'Peru' => '51',
+            'Chile' => '56',
+            'Ecuador' => '593',
+            'Estados Unidos' => '1',
+            'España' => '34',
+            'Espana' => '34',
+            'Venezuela' => '58',
+            'Bolivia' => '591',
+            'Paraguay' => '595',
+            'Uruguay' => '598',
+            'Brasil' => '55',
+            'Panamá' => '507',
+            'Panama' => '507',
+            'Costa Rica' => '506',
+            'Guatemala' => '502',
+            'Honduras' => '504',
+            'El Salvador' => '503',
+            'Nicaragua' => '505',
+            'República Dominicana' => '1',
+            'Republica Dominicana' => '1',
+            'Cuba' => '53'
+        ];
 
-    <table class="w-full text-sm border border-gray-700">
-        
-        <thead class="bg-gray-800 text-gray-300">
-            <tr>
-                <th>#</th>
-                <th>Nombre</th>
-                <th>Fecha Nac.</th>
-                <th>País</th>
-                <th>Teléfono</th>
-                <th>Motivo</th>
-                <th>Recepción</th>
-                <th>Tiempo</th>
-                <th>Estado</th>
-                <th>Acción</th>
-                <th>Obs</th>
-            </tr>
-        </thead>
+        return $mapa[trim($pais)] ?? '57';
+    }
 
-        <tbody>
+    function limpiarNumero($numero) {
+        return preg_replace('/[^0-9]/', '', $numero);
+    }
 
-        <?php foreach ($formularios as $f): ?>
+    function construirWhatsapp($pais, $telefono) {
+        $codigo = obtenerCodigoPais($pais);
+        $numero = limpiarNumero($telefono);
 
-        <?php
-            $fecha_registro = new DateTime($f['fecha_registro']);
-            $ahora = new DateTime();
-            $intervalo = $fecha_registro->diff($ahora);
-            $tiempo = $intervalo->d . "d " . $intervalo->h . "h";
-        ?>
+        if (empty($numero)) {
+            return '';
+        }
 
-        <tr class="border-t border-gray-700 hover:bg-gray-900">
+        if (strpos($numero, $codigo) === 0) {
+            return $numero;
+        }
 
-            <td><?= $f['id'] ?></td>
-            <td><?= $f['nombre_completo'] ?></td>
-            <td><?= $f['fecha_nacimiento'] ?></td>
-            <td><?= $f['pais'] ?></td>
-            <td><?= $f['telefono'] ?></td>
+        return $codigo . $numero;
+    }
+    ?>
 
-            <!-- 📌 MOTIVO -->
-            <td>
-                <?php if (!empty($f['motivo'])): ?>
-                    <button onclick="verMotivo(`<?= htmlspecialchars($f['motivo']) ?>`)"
-                            class="bg-blue-600 hover:bg-blue-700 text-xs px-2 py-1">
-                        Ver
-                    </button>
+    <!-- TÍTULO -->
+    <div class="flex items-center gap-2 mb-4">
+        <span class="text-xl">📋</span>
+        <h1 class="text-[20px] font-semibold text-white">Panel de Incorporaciones</h1>
+    </div>
+
+    <!-- TABLA -->
+    <div class="border border-[#2b3d57] bg-black overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+            <thead class="bg-[#22324a] text-white">
+                <tr>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">#</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Nombre</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Fecha Nac.</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">País</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Teléfono</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Motivo</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Recepción</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Tiempo</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Estado</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Acción</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Obs</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php if (!empty($formularios)): ?>
+                    <?php foreach ($formularios as $f): ?>
+
+                        <?php
+                            $fecha_registro = new DateTime($f['fecha_registro']);
+                            $ahora = new DateTime();
+                            $intervalo = $fecha_registro->diff($ahora);
+                            $tiempo = $intervalo->d . "d " . $intervalo->h . "h";
+
+                            $estado = trim($f['estado'] ?? 'Pendiente');
+                            $estadoTexto = 'Pendiente';
+                            $estadoColor = 'text-yellow-400';
+                            $estadoPunto = '🟡';
+
+                            if ($estado === 'En revision' || $estado === 'En revisión') {
+                                $estadoTexto = 'En revisión';
+                                $estadoColor = 'text-blue-400';
+                                $estadoPunto = '🔵';
+                            } elseif ($estado === 'Aprobado') {
+                                $estadoTexto = 'Aprobado';
+                                $estadoColor = 'text-green-400';
+                                $estadoPunto = '🟢';
+                            } elseif ($estado === 'Rechazado') {
+                                $estadoTexto = 'Rechazado';
+                                $estadoColor = 'text-red-400';
+                                $estadoPunto = '🔴';
+                            }
+
+                            $telefonoMostrar = $f['telefono'] ?? '';
+                            $whatsappNumero = construirWhatsapp($f['pais'] ?? '', $telefonoMostrar);
+                            $mensajeWhatsapp = rawurlencode("Hola, te contactamos desde CMI respecto a tu solicitud.");
+                            $linkWhatsapp = !empty($whatsappNumero)
+                                ? "https://wa.me/{$whatsappNumero}?text={$mensajeWhatsapp}"
+                                : '';
+                        ?>
+
+                        <tr class="hover:bg-[#0b1220]">
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= htmlspecialchars($f['id']) ?>
+                            </td>
+
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= htmlspecialchars($f['nombre_completo']) ?>
+                            </td>
+
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= htmlspecialchars($f['fecha_nacimiento']) ?>
+                            </td>
+
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= htmlspecialchars($f['pais']) ?>
+                            </td>
+
+                            <!-- TELÉFONO + WHATSAPP -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-white">
+                                        <?= htmlspecialchars($telefonoMostrar) ?>
+                                    </span>
+
+                                    <?php if (!empty($linkWhatsapp)): ?>
+                                        <a href="<?= htmlspecialchars($linkWhatsapp) ?>"
+                                           target="_blank"
+                                           class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-[11px] px-2 py-1 rounded"
+                                           title="Abrir WhatsApp">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 viewBox="0 0 24 24"
+                                                 fill="currentColor"
+                                                 class="w-3 h-3">
+                                                <path d="M20.52 3.48A11.94 11.94 0 0 0 12.04 0C5.41 0 .03 5.38.03 12c0 2.11.55 4.17 1.6 5.98L0 24l6.19-1.62A11.96 11.96 0 0 0 12.04 24c6.62 0 12-5.38 12-12 0-3.2-1.25-6.2-3.52-8.52ZM12.04 21.86c-1.78 0-3.53-.48-5.05-1.39l-.36-.21-3.67.96.98-3.58-.24-.37A9.83 9.83 0 0 1 2.21 12c0-5.42 4.41-9.83 9.83-9.83 2.62 0 5.08 1.02 6.93 2.88A9.75 9.75 0 0 1 21.87 12c0 5.42-4.41 9.86-9.83 9.86Zm5.39-7.36c-.29-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.15-.17.2-.34.22-.64.08-.29-.15-1.24-.46-2.36-1.47-.87-.78-1.46-1.75-1.63-2.05-.17-.29-.02-.45.13-.59.13-.13.29-.34.44-.51.15-.17.19-.29.29-.49.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.91-2.19-.24-.57-.48-.49-.66-.5h-.56c-.2 0-.52.07-.79.37-.27.29-1.03 1-1.03 2.43 0 1.43 1.05 2.82 1.19 3.02.15.2 2.06 3.14 5 4.41.7.3 1.24.49 1.67.63.7.22 1.33.19 1.83.12.56-.08 1.75-.71 2-1.4.24-.69.24-1.28.17-1.4-.08-.12-.27-.2-.56-.34Z"/>
+                                            </svg>
+                                            WhatsApp
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-gray-500 text-xs">N/A</span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+
+                            <!-- MOTIVO -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?php if (!empty($f['motivo'])): ?>
+                                    <button onclick="verMotivo(`<?= htmlspecialchars($f['motivo'], ENT_QUOTES) ?>`)"
+                                            class="bg-blue-700 hover:bg-blue-800 text-white text-xs px-3 py-1">
+                                        Ver
+                                    </button>
+                                <?php else: ?>
+                                    <span class="text-gray-500 text-xs">N/A</span>
+                                <?php endif; ?>
+                            </td>
+
+                            <!-- RECEPCIÓN -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= date('Y-m-d H:i', strtotime($f['fecha_registro'])) ?>
+                            </td>
+
+                            <!-- TIEMPO -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap text-yellow-400">
+                                <?= $tiempo ?>
+                            </td>
+
+                            <!-- ESTADO -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <span class="<?= $estadoColor ?>">
+                                    <?= $estadoPunto ?> <?= $estadoTexto ?>
+                                </span>
+                            </td>
+
+                            <!-- ACCIÓN -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?php if ($estadoTexto === 'Aprobado' || $estadoTexto === 'Rechazado'): ?>
+                                    <span class="text-gray-500">Finalizado</span>
+                                <?php else: ?>
+                                    <select onchange="abrirModal(<?= (int)$f['id'] ?>, this.value)"
+                                            class="bg-black border border-gray-500 text-white text-xs px-2 py-[2px] outline-none">
+                                        <option value="">Cambiar</option>
+                                        <option value="2">En revisión</option>
+                                        <option value="3">Aprobado</option>
+                                        <option value="4">Rechazado</option>
+                                    </select>
+                                <?php endif; ?>
+                            </td>
+
+                            <!-- OBSERVACIONES -->
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?php if (!empty($f['observaciones'])): ?>
+                                    <button onclick="verObservaciones(`<?= htmlspecialchars($f['observaciones'], ENT_QUOTES) ?>`)"
+                                            class="bg-purple-700 hover:bg-purple-800 text-white text-xs px-3 py-1">
+                                        Ver
+                                    </button>
+                                <?php else: ?>
+                                    <span class="text-gray-500 text-xs">N/A</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
                 <?php else: ?>
-                    <span class="text-gray-500 text-xs">N/A</span>
+                    <tr>
+                        <td colspan="11" class="border border-[#2b3d57] px-2 py-3 text-center text-gray-400">
+                            No hay incorporaciones registradas
+                        </td>
+                    </tr>
                 <?php endif; ?>
-            </td>
-
-            <!-- 📅 Fecha -->
-            <td><?= date('Y-m-d H:i', strtotime($f['fecha_registro'])) ?></td>
-
-            <!-- ⏱️ Tiempo -->
-            <td class="text-yellow-400"><?= $tiempo ?></td>
-
-            <!-- 🎯 Estado -->
-            <td>
-                <?php if ($f['estado'] == 'Pendiente'): ?>
-                    <span class="text-yellow-400">🟡 Pendiente</span>
-                <?php elseif ($f['estado'] == 'En revision'): ?>
-                    <span class="text-blue-400">🔵 En revisión</span>
-                <?php elseif ($f['estado'] == 'Aprobado'): ?>
-                    <span class="text-green-400">🟢 Aprobado</span>
-                <?php elseif ($f['estado'] == 'Rechazado'): ?>
-                    <span class="text-red-400">🔴 Rechazado</span>
-                <?php endif; ?>
-            </td>
-
-            <!-- ⚙️ Acción -->
-            <td>
-                <?php if ($f['estado'] == 'Aprobado' || $f['estado'] == 'Rechazado'): ?>
-                    <span class="text-gray-500">Finalizado</span>
-                <?php else: ?>
-                    <select onchange="abrirModal(<?= $f['id'] ?>, this.value)"
-                            class="bg-black border border-gray-600 text-white text-xs p-1">
-                        <option value="">Cambiar</option>
-                        <option value="2">En revisión</option>
-                        <option value="3">Aprobado</option>
-                        <option value="4">Rechazado</option>
-                    </select>
-                <?php endif; ?>
-            </td>
-
-            <!-- 📌 OBSERVACIONES -->
-            <td>
-                <?php if (!empty($f['observaciones'])): ?>
-                    <button onclick="verObservaciones(`<?= htmlspecialchars($f['observaciones']) ?>`)"
-                            class="bg-purple-600 hover:bg-purple-700 text-xs px-2 py-1">
-                        Ver
-                    </button>
-                <?php else: ?>
-                    <span class="text-gray-500 text-xs">N/A</span>
-                <?php endif; ?>
-            </td>
-
-        </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-
-    </table>
+            </tbody>
+        </table>
+    </div>
 
 </div>
 
-<!-- 🧾 MODAL CAMBIO ESTADO -->
-<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+<!-- MODAL CAMBIO ESTADO -->
+<div id="modal" class="hidden fixed inset-0 bg-black/70 items-center justify-center z-50">
+    <div class="bg-[#111827] border border-[#2b3d57] p-5 w-full max-w-md shadow-xl">
 
-    <div class="bg-gray-900 p-6 rounded w-96">
-
-        <h2 class="text-lg mb-3">🧾 Observaciones</h2>
+        <h2 class="text-lg mb-3 text-white font-semibold">🧾 Observaciones</h2>
 
         <form method="POST" action="<?= BASE_URL ?>/index.php?url=admin/incorporaciones/actualizarEstado">
-
             <input type="hidden" name="id" id="modal_id">
             <input type="hidden" name="estado_id" id="modal_estado">
             <input type="hidden" name="evaluado_por" value="<?= $_SESSION['user']['id'] ?>">
 
             <textarea name="observaciones"
-                      class="w-full bg-black border border-gray-600 text-white p-2 mb-3"
+                      class="w-full bg-black border border-gray-600 text-white p-2 mb-3 outline-none"
                       placeholder="Observaciones..." required></textarea>
 
-            <div class="flex justify-between">
-                <button type="button" onclick="cerrarModal()" class="bg-gray-600 px-3 py-1">Cancelar</button>
-                <button type="submit" class="bg-green-600 px-3 py-1">Guardar</button>
-            </div>
+            <div class="flex justify-between gap-2">
+                <button type="button"
+                        onclick="cerrarModal()"
+                        class="bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 text-sm w-full">
+                    Cancelar
+                </button>
 
+                <button type="submit"
+                        class="bg-green-700 hover:bg-green-800 text-white px-3 py-1 text-sm w-full">
+                    Guardar
+                </button>
+            </div>
         </form>
 
     </div>
-
 </div>
 
-<!-- 📌 MODAL VER (Motivo / Observaciones) -->
-<div id="modal_ver" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+<!-- MODAL VER -->
+<div id="modal_ver" class="hidden fixed inset-0 bg-black/70 items-center justify-center z-50">
+    <div class="bg-[#111827] border border-[#2b3d57] p-5 w-full max-w-md shadow-xl">
 
-    <div class="bg-gray-900 p-6 rounded w-96">
+        <h2 id="titulo_modal" class="text-lg mb-3 text-white font-semibold"></h2>
 
-        <h2 id="titulo_modal" class="text-lg mb-3"></h2>
+        <div id="contenido_modal" class="bg-black p-3 border border-gray-700 text-sm text-white mb-3 min-h-[80px]"></div>
 
-        <div id="contenido_modal" class="bg-black p-3 border border-gray-700 text-sm text-white mb-3"></div>
-
-        <button onclick="cerrarModalVer()" class="bg-red-600 px-3 py-1 w-full">
+        <button onclick="cerrarModalVer()"
+                class="bg-red-700 hover:bg-red-800 text-white px-3 py-1 w-full text-sm">
             Cerrar
         </button>
-
     </div>
-
 </div>
 
-<!-- ⚙️ SCRIPT -->
+<style>
+    table th,
+    table td {
+        font-size: 12px;
+        line-height: 1.1;
+        vertical-align: middle;
+    }
+</style>
+
 <script>
 function abrirModal(id, estado) {
     if (estado === "") return;
 
-    document.getElementById('modal').classList.remove('hidden');
+    const modal = document.getElementById('modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
     document.getElementById('modal_id').value = id;
     document.getElementById('modal_estado').value = estado;
 }
 
 function cerrarModal() {
-    document.getElementById('modal').classList.add('hidden');
+    const modal = document.getElementById('modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 
 function verMotivo(texto) {
-    document.getElementById('modal_ver').classList.remove('hidden');
+    const modal = document.getElementById('modal_ver');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
     document.getElementById('titulo_modal').innerText = "📌 Motivo";
-    document.getElementById('contenido_modal').innerText = texto;
+    document.getElementById('contenido_modal').innerText = texto || 'Sin información';
 }
 
 function verObservaciones(texto) {
-    document.getElementById('modal_ver').classList.remove('hidden');
+    const modal = document.getElementById('modal_ver');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
     document.getElementById('titulo_modal').innerText = "🧾 Observaciones";
-    document.getElementById('contenido_modal').innerText = texto;
+    document.getElementById('contenido_modal').innerText = texto || 'Sin observaciones';
 }
 
 function cerrarModalVer() {
-    document.getElementById('modal_ver').classList.add('hidden');
+    const modal = document.getElementById('modal_ver');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 </script>

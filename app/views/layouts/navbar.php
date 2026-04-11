@@ -60,7 +60,7 @@
         <!-- Logo central -->
         <div class="flex items-center justify-center flex-1 md:flex-none">
             <img 
-                src="/CMI/assets/img/logos/escudo-Photoroom.png" 
+                src="/cmi/public/assets/img/logos/escudo-Photoroom.png" 
                 alt="Escudo Militar"
                 class="relative z-50 w-1 h-12 md:w-auto md:h-auto
                        transition-all duration-300

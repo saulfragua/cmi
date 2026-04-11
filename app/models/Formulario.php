@@ -4,18 +4,11 @@ class Formulario
 {
     private $db;
 
-    /**
-     * 🔌 Constructor: obtiene la conexión usando tu clase Database (Singleton)
-     */
     public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
     }
 
-    /**
-     * 📌 Crear nuevo formulario
-     * Siempre inicia en estado 1 (Pendiente)
-     */
     public function crear($datos)
     {
         $sql = "INSERT INTO formulario 
@@ -29,13 +22,10 @@ class Formulario
             ':fecha' => $datos['fecha'],
             ':pais' => $datos['pais'],
             ':telefono' => $datos['telefono'],
-            ':motivo' => $datos['motivo']
+            ':motivo' => $datos['motivo'] ?? null
         ]);
-    }       
+    }
 
-    /**
-     * 📋 Obtener todos los formularios con el nombre del estado
-     */
     public function obtenerTodos()
     {
         $sql = "SELECT f.*, e.nombre AS estado
@@ -49,12 +39,13 @@ class Formulario
         return $stmt->fetchAll();
     }
 
-    /**
-     * 🔍 Obtener un formulario por ID
-     */
     public function obtenerPorId($id)
     {
-        $sql = "SELECT * FROM formulario WHERE id = :id";
+        $sql = "SELECT f.*, e.nombre AS estado
+                FROM formulario f
+                INNER JOIN estados_formulario e ON f.estado_id = e.id
+                WHERE f.id = :id
+                LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -64,13 +55,6 @@ class Formulario
         return $stmt->fetch();
     }
 
-    /**
-     * 🔄 Cambiar estado del formulario
-     * Guarda:
-     * - estado
-     * - observaciones
-     * - evaluador
-     */
     public function cambiarEstado($id, $estado, $observaciones, $evaluador)
     {
         $sql = "UPDATE formulario
@@ -89,9 +73,6 @@ class Formulario
         ]);
     }
 
-    /**
-     * ❌ Eliminar formulario
-     */
     public function eliminar($id)
     {
         $sql = "DELETE FROM formulario WHERE id = :id";
@@ -103,12 +84,9 @@ class Formulario
         ]);
     }
 
-    /**
-     * 📊 Contar formularios por estado (para dashboard)
-     */
     public function contarPorEstado()
     {
-        $sql = "SELECT estado_id, COUNT(*) as total
+        $sql = "SELECT estado_id, COUNT(*) AS total
                 FROM formulario
                 GROUP BY estado_id";
 
@@ -118,9 +96,6 @@ class Formulario
         return $stmt->fetchAll();
     }
 
-    /**
-     * 📋 Obtener formularios por estado
-     */
     public function obtenerPorEstado($estado_id)
     {
         $sql = "SELECT f.*, e.nombre AS estado

@@ -1,18 +1,18 @@
 <?php
 
-require_once ROOT . '/app/models/Formulario.php';
+require_once __DIR__ . '/../../models/Formulario.php';
+require_once __DIR__ . '/../../models/Operador.php';
 
 class IncorporacionesController {
 
     private $modelo;
+    private $operadorModelo;
 
     public function __construct() {
         $this->modelo = new Formulario();
+        $this->operadorModelo = new Operador();
     }
 
-    /**
-     * 🔐 Validar sesión (evita repetir código)
-     */
     private function validarSesion() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -24,27 +24,16 @@ class IncorporacionesController {
         }
     }
 
-    /**
-     * 📋 Mostrar listado de incorporaciones
-     */
     public function index() {
-
         $this->validarSesion();
 
-        // Obtener datos desde el modelo
         $formularios = $this->modelo->obtenerTodos();
 
-        // Vista
         $contenido = ROOT . '/app/views/admin/incorporaciones/index.php';
         require ROOT . '/app/views/admin/layouts/main.php';
     }
 
-    /**
-     * 💾 Guardar nueva incorporación
-     * (Siempre inicia en estado 1 = Pendiente)
-     */
     public function guardar() {
-
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -63,34 +52,61 @@ class IncorporacionesController {
         }
     }
 
-    /**
-     * 🔄 Cambiar estado del formulario
-     */
     public function actualizarEstado() {
-
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $id = $_POST['id'];
-            $estado = $_POST['estado_id'];
-            $observaciones = $_POST['observaciones'];
+            $id = $_POST['id'] ?? null;
+            $estado = $_POST['estado_id'] ?? null;
+            $observaciones = trim($_POST['observaciones'] ?? '');
 
-            // 👤 Toma automáticamente el usuario logueado
+            if (!$id || !$estado) {
+                die('❌ Faltan datos para actualizar el estado');
+            }
+
             $evaluador = $_SESSION['user']['id'];
 
             $this->modelo->cambiarEstado($id, $estado, $observaciones, $evaluador);
+
+            if ((int)$estado === 3) {
+                $formulario = $this->modelo->obtenerPorId($id);
+
+                if ($formulario) {
+                    $existe = $this->operadorModelo->existeOperador(
+                        $formulario['nombre_completo'],
+                        $formulario['fecha_nacimiento'],
+                        $formulario['telefono']
+                    );
+
+                    if (!$existe) {
+                        $codigo = $this->operadorModelo->generarCodigo();
+
+                        $this->operadorModelo->crear([
+                            'codigo' => $codigo,
+                            'clave' => password_hash('123456', PASSWORD_DEFAULT),
+                            'foto_operador' => null,
+                            'nombre_completo' => $formulario['nombre_completo'],
+                            'fecha_nacimiento' => $formulario['fecha_nacimiento'],
+                            'rango_id' => null,
+                            'especialidad_id' => null,
+                            'unidad_id' => null,
+                            'pais' => $formulario['pais'],
+                            'telefono' => $formulario['telefono'],
+                            'rol' => 'operador',
+                            'fecha_ultimo_ascenso' => null,
+                            'usuario_actualiza' => $evaluador
+                        ]);
+                    }
+                }
+            }
 
             header('Location: ' . BASE_URL . '/admin/incorporaciones');
             exit;
         }
     }
 
-    /**
-     * ❌ Eliminar registro
-     */
     public function eliminar($id) {
-
         $this->validarSesion();
 
         $this->modelo->eliminar($id);
