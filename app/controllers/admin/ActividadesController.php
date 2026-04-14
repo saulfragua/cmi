@@ -172,6 +172,10 @@ class ActividadesController
         ];
 
         $this->actividadModel->actualizar($id, $data);
+        if (($data['estado'] ?? '') === 'Finalizada') {
+    $this->actividadModel->guardarResumenHistorico($id);
+    $this->actividadModel->guardarParticipantesHistoricos($id);
+}
 
         header('Location: ' . BASE_URL . '/actividades');
         exit;

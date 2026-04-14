@@ -217,4 +217,100 @@ public function crear($data)
             ':operador_id'  => $operador_id
         ]);
     }
+
+    public function guardarResumenHistorico($actividad_id)
+{
+    $sql = "UPDATE actividades a
+            SET 
+                total_convocados = (
+                    SELECT COUNT(*)
+                    FROM actividad_operador ao
+                    WHERE ao.actividad_id = a.id
+                ),
+                total_asistieron = (
+                    SELECT COUNT(*)
+                    FROM actividad_operador ao
+                    WHERE ao.actividad_id = a.id
+                      AND ao.estado = 'Asiste'
+                ),
+                total_no_asistieron = (
+                    SELECT COUNT(*)
+                    FROM actividad_operador ao
+                    WHERE ao.actividad_id = a.id
+                      AND ao.estado = 'No asiste'
+                ),
+                total_pendientes_cierre = (
+                    SELECT COUNT(*)
+                    FROM actividad_operador ao
+                    WHERE ao.actividad_id = a.id
+                      AND ao.estado = 'Pendiente'
+                ),
+                fecha_cierre = NOW()
+            WHERE a.id = :actividad_id";
+
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        ':actividad_id' => $actividad_id
+    ]);
+}
+
+public function guardarParticipantesHistoricos($actividad_id)
+{
+    // Evita duplicar históricos si ya se cerró antes
+    $sqlVerificar = "SELECT COUNT(*) AS total
+                     FROM actividad_operador_historico
+                     WHERE actividad_id = :actividad_id";
+
+    $stmtVerificar = $this->db->prepare($sqlVerificar);
+    $stmtVerificar->execute([':actividad_id' => $actividad_id]);
+    $existe = $stmtVerificar->fetch();
+
+    if (($existe['total'] ?? 0) > 0) {
+        return true;
+    }
+
+    $sql = "INSERT INTO actividad_operador_historico (
+                actividad_id,
+                operador_id,
+                codigo_operador,
+                nombre_completo,
+                telefono,
+                estado_operador,
+                estado_participacion,
+                observacion,
+                fecha_respuesta,
+                fecha_cierre_historico
+            )
+            SELECT
+                ao.actividad_id,
+                ao.operador_id,
+                o.codigo,
+                o.nombre_completo,
+                o.telefono,
+                o.estado,
+                ao.estado,
+                ao.observacion,
+                ao.fecha_respuesta,
+                NOW()
+            FROM actividad_operador ao
+            INNER JOIN operadores o ON ao.operador_id = o.id
+            WHERE ao.actividad_id = :actividad_id";
+
+    $stmt = $this->db->prepare($sql);
+    return $stmt->execute([
+        ':actividad_id' => $actividad_id
+    ]);
+}
+
+public function obtenerParticipacionHistorica($actividad_id)
+{
+    $sql = "SELECT *
+            FROM actividad_operador_historico
+            WHERE actividad_id = :actividad_id
+            ORDER BY nombre_completo ASC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':actividad_id' => $actividad_id]);
+    return $stmt->fetchAll();
+}
 }
