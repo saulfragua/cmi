@@ -33,12 +33,15 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
-                        SELECT GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ')
+                        SELECT e.nombre
                         FROM operador_especialidad oe
                         INNER JOIN especialidades e ON oe.especialidad_id = e.id
                         WHERE oe.operador_id = o.id
-                    ) AS especialidades,
+                          AND oe.principal = 1
+                        LIMIT 1
+                    ) AS especialidad_principal,
                     (
                         SELECT GROUP_CONCAT(DISTINCT u.nombre SEPARATOR ', ')
                         FROM operador_unidad ou
@@ -66,8 +69,17 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
-                        SELECT GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ')
+                        SELECT e.nombre
+                        FROM operador_especialidad oe
+                        INNER JOIN especialidades e ON oe.especialidad_id = e.id
+                        WHERE oe.operador_id = o.id
+                          AND oe.principal = 1
+                        LIMIT 1
+                    ) AS especialidad_principal,
+                    (
+                        SELECT GROUP_CONCAT(DISTINCT e.sigla SEPARATOR ', ')
                         FROM operador_especialidad oe
                         INNER JOIN especialidades e ON oe.especialidad_id = e.id
                         WHERE oe.operador_id = o.id
@@ -248,12 +260,15 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
-                        SELECT GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ')
+                        SELECT e.nombre
                         FROM operador_especialidad oe
                         INNER JOIN especialidades e ON oe.especialidad_id = e.id
                         WHERE oe.operador_id = o.id
-                    ) AS especialidades,
+                          AND oe.principal = 1
+                        LIMIT 1
+                    ) AS especialidad_principal,
                     (
                         SELECT GROUP_CONCAT(DISTINCT u.nombre SEPARATOR ', ')
                         FROM operador_unidad ou
@@ -325,7 +340,7 @@ class Operador
 
     public function obtenerEspecialidadesActivas()
     {
-        return $this->db->query("SELECT id, nombre FROM especialidades WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
+        return $this->db->query("SELECT id, nombre, sigla FROM especialidades WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
     }
 
     public function obtenerUnidadesActivas()
@@ -380,7 +395,7 @@ class Operador
         return array_column($stmt->fetchAll(), 'unidad_id');
     }
 
-    public function guardarEspecialidadesAsignadas($operadorId, $especialidades = [])
+    public function guardarEspecialidadesAsignadas($operadorId, $especialidades = [], $principalId = null)
     {
         $sqlDelete = "DELETE FROM operador_especialidad WHERE operador_id = :operador_id";
         $stmtDelete = $this->db->prepare($sqlDelete);
@@ -389,14 +404,15 @@ class Operador
         ]);
 
         if (!empty($especialidades)) {
-            $sqlInsert = "INSERT INTO operador_especialidad (operador_id, especialidad_id)
-                          VALUES (:operador_id, :especialidad_id)";
+            $sqlInsert = "INSERT INTO operador_especialidad (operador_id, especialidad_id, principal)
+                          VALUES (:operador_id, :especialidad_id, :principal)";
             $stmtInsert = $this->db->prepare($sqlInsert);
 
             foreach ($especialidades as $especialidadId) {
                 $stmtInsert->execute([
                     ':operador_id' => $operadorId,
-                    ':especialidad_id' => $especialidadId
+                    ':especialidad_id' => $especialidadId,
+                    ':principal' => ((string) $principalId === (string) $especialidadId) ? 1 : 0
                 ]);
             }
         }
@@ -444,5 +460,107 @@ class Operador
                 ]);
             }
         }
+    }
+
+    public function obtenerEspecialidadPrincipal($operadorId)
+    {
+        $sql = "SELECT especialidad_id
+                FROM operador_especialidad
+                WHERE operador_id = :operador_id
+                  AND principal = 1
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':operador_id' => $operadorId
+        ]);
+
+        $fila = $stmt->fetch();
+        return $fila ? $fila['especialidad_id'] : null;
+    }
+
+
+public function filtrar($filtros = [])
+{
+    $where = [];
+    $params = [];
+
+    // Buscar por nombre completo
+    if (!empty($filtros['buscar'])) {
+        $where[] = "o.nombre_completo LIKE :buscar";
+        $params[':buscar'] = '%' . trim($filtros['buscar']) . '%';
+    }
+
+    // Filtrar por estado
+    if (!empty($filtros['estado'])) {
+        $where[] = "o.estado = :estado";
+        $params[':estado'] = trim($filtros['estado']);
+    }
+
+    // Filtrar por rango
+    if (!empty($filtros['rango'])) {
+        $where[] = "o.rango_id = :rango";
+        $params[':rango'] = (int) $filtros['rango'];
+    }
+
+    // Filtrar por especialidad principal
+    if (!empty($filtros['especialidad'])) {
+        $where[] = "EXISTS (
+            SELECT 1
+            FROM operador_especialidad oe
+            WHERE oe.operador_id = o.id
+              AND oe.principal = 1
+              AND oe.especialidad_id = :especialidad
+        )";
+        $params[':especialidad'] = (int) $filtros['especialidad'];
+    }
+
+    $sql = "SELECT 
+                o.*,
+                r.nombre AS rango,
+                TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
+                (
+                    SELECT e.nombre
+                    FROM operador_especialidad oe
+                    INNER JOIN especialidades e ON oe.especialidad_id = e.id
+                    WHERE oe.operador_id = o.id
+                      AND oe.principal = 1
+                    LIMIT 1
+                ) AS especialidad_principal,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT u.nombre SEPARATOR ', ')
+                    FROM operador_unidad ou
+                    INNER JOIN unidades u ON ou.unidad_id = u.id
+                    WHERE ou.operador_id = o.id
+                ) AS unidades,
+                (
+                    SELECT GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ')
+                    FROM operador_curso oc
+                    INNER JOIN cursos c ON oc.curso_id = c.id
+                    WHERE oc.operador_id = o.id
+                ) AS cursos
+            FROM operadores o
+            LEFT JOIN rangos r ON o.rango_id = r.id";
+
+    if (!empty($where)) {
+        $sql .= " WHERE " . implode(' AND ', $where);
+    }
+
+    $sql .= " ORDER BY o.id DESC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->fetchAll();
+}
+
+    public function obtenerEstadosFiltro()
+    {
+        return [
+            'Activo',
+            'Reserva',
+            'Suspendido',
+            'Retirado'
+        ];
     }
 }

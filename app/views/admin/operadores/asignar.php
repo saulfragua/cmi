@@ -36,26 +36,35 @@
                 </button>
             </div>
 
-            <div id="lista_especialidades"
-                 class="bg-black border border-gray-700 rounded p-3 min-h-[120px] space-y-2">
-                <?php foreach ($especialidades as $e): ?>
-                    <?php if (in_array($e['id'], $especialidadesAsignadas)): ?>
-                        <div class="flex items-center justify-between bg-[#0b1220] border border-gray-700 px-3 py-2 rounded item-especialidades"
-                             data-id="<?= $e['id'] ?>">
-                            <span><?= htmlspecialchars($e['nombre']) ?></span>
-                            <div class="flex items-center gap-2">
-                                <input type="hidden" name="especialidades[]" value="<?= $e['id'] ?>">
-                                <button type="button"
-                                        onclick="eliminarItem(this)"
-                                        class="bg-red-700 hover:bg-red-800 text-xs px-2 py-1 rounded">
-                                    Quitar
-                                </button>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+<div id="lista_especialidades"
+     class="bg-black border border-gray-700 rounded p-3 min-h-[120px] space-y-2">
+    <?php foreach ($especialidades as $e): ?>
+        <?php if (in_array($e['id'], $especialidadesAsignadas)): ?>
+            <div class="flex items-center justify-between bg-[#0b1220] border border-gray-700 px-3 py-2 rounded item-especialidades"
+                 data-id="<?= $e['id'] ?>">
+                <div class="flex flex-col gap-1">
+                    <span><?= htmlspecialchars($e['nombre']) ?></span>
+                    <label class="text-xs text-yellow-400 flex items-center gap-2">
+                        <input type="radio"
+                               name="especialidad_principal"
+                               value="<?= $e['id'] ?>"
+                               <?= ((string)$especialidadPrincipal === (string)$e['id']) ? 'checked' : '' ?>>
+                        Principal
+                    </label>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="hidden" name="especialidades[]" value="<?= $e['id'] ?>">
+                    <button type="button"
+                            onclick="eliminarItemEspecialidad(this)"
+                            class="bg-red-700 hover:bg-red-800 text-xs px-2 py-1 rounded">
+                        Quitar
+                    </button>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</div>
 
         <!-- CURSOS -->
         <div>
@@ -158,7 +167,13 @@
 </div>
 
 <script>
+
 function agregarItem(tipo) {
+    if (tipo === 'especialidades') {
+        agregarEspecialidad();
+        return;
+    }
+
     const select = document.getElementById('select_' + tipo);
     const lista = document.getElementById('lista_' + tipo);
 
@@ -191,6 +206,74 @@ function agregarItem(tipo) {
     lista.appendChild(div);
     select.value = '';
 }
+
+function agregarEspecialidad() {
+    const select = document.getElementById('select_especialidades');
+    const lista = document.getElementById('lista_especialidades');
+
+    const id = select.value;
+    const nombre = select.options[select.selectedIndex]?.dataset.nombre;
+
+    if (!id || !nombre) return;
+
+    if (lista.querySelector('[data-id="' + id + '"]')) {
+        alert('Esa especialidad ya está asignada.');
+        return;
+    }
+
+    const yaExistePrincipal = lista.querySelector('input[name="especialidad_principal"]:checked');
+
+    const div = document.createElement('div');
+    div.className = 'flex items-center justify-between bg-[#0b1220] border border-gray-700 px-3 py-2 rounded item-especialidades';
+    div.setAttribute('data-id', id);
+
+    div.innerHTML = `
+        <div class="flex flex-col gap-1">
+            <span>${nombre}</span>
+            <label class="text-xs text-yellow-400 flex items-center gap-2">
+                <input type="radio" name="especialidad_principal" value="${id}" ${!yaExistePrincipal ? 'checked' : ''}>
+                Principal
+            </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <input type="hidden" name="especialidades[]" value="${id}">
+            <button type="button"
+                    onclick="eliminarItemEspecialidad(this)"
+                    class="bg-red-700 hover:bg-red-800 text-xs px-2 py-1 rounded">
+                Quitar
+            </button>
+        </div>
+    `;
+
+    lista.appendChild(div);
+    select.value = '';
+}
+
+function eliminarItem(boton) {
+    const item = boton.closest('div[data-id]');
+    if (item) {
+        item.remove();
+    }
+}
+
+function eliminarItemEspecialidad(boton) {
+    const item = boton.closest('div[data-id]');
+    if (!item) return;
+
+    const radio = item.querySelector('input[name="especialidad_principal"]');
+    const estabaMarcada = radio && radio.checked;
+
+    item.remove();
+
+    if (estabaMarcada) {
+        const primera = document.querySelector('#lista_especialidades input[name="especialidad_principal"]');
+        if (primera) {
+            primera.checked = true;
+        }
+    }
+}
+
 
 function eliminarItem(boton) {
     const item = boton.closest('div[data-id]');

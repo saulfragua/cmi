@@ -86,6 +86,7 @@ $router->post('/operadores/actualizar', 'OperadoresController@actualizar');
 $router->post('/operadores/cambiarEstado', 'OperadoresController@cambiarEstado');
 $router->get('/operadores/asignar', 'OperadoresController@asignar');
 $router->post('/operadores/guardarAsignaciones', 'OperadoresController@guardarAsignaciones');
+$router->get('/operadores/ver', 'OperadoresController@ver');
 
 // ================= ADMIN RANGOS =================
 $router->get('/rangos', 'RangosController@index');
@@ -126,6 +127,17 @@ $router->post('/cursos/actualizar', 'CursosController@actualizar');
 $router->post('/cursos/activar', 'CursosController@activar');
 $router->post('/cursos/inactivar', 'CursosController@inactivar');
 $router->post('/cursos/eliminar', 'CursosController@eliminar');
+
+// ================= ACTIVIDADES =================
+$router->get('/actividades', 'ActividadesController@index');
+$router->get('/actividades/crear', 'ActividadesController@crear');
+$router->post('/actividades/guardar', 'ActividadesController@guardar');
+$router->get('/actividades/editar', 'ActividadesController@editar');
+$router->post('/actividades/actualizar', 'ActividadesController@actualizar');
+$router->get('/actividades/ver', 'ActividadesController@ver');
+$router->post('/actividades/eliminar', 'ActividadesController@eliminar');
+$router->post('/actividades/cambiar-estado-participacion', 'ActividadesController@cambiarEstadoParticipacion');
+
 
 // --------------------------------------------
 // ▶️ EJECUTAR APLICACIÓN

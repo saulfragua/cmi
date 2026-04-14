@@ -56,17 +56,28 @@ class OperadoresController {
         return null;
     }
 
-    public function index()
-    {
-        $this->validarSesion();
+public function index()
+{
+    $this->validarSesion();
 
-        $operadores = $this->modelo->obtenerTodos();
-        $total_operadores = $this->modelo->contarTotal();
-        $conteo_estados = $this->modelo->contarPorEstado();
+$filtros = [
+    'buscar' => $_GET['buscar'] ?? '',
+    'estado' => $_GET['estado'] ?? '',
+    'rango' => $_GET['rango'] ?? '',
+    'especialidad' => $_GET['especialidad'] ?? ''
+];
 
-        $contenido = ROOT . '/app/views/admin/operadores/index.php';
-        require ROOT . '/app/views/admin/layouts/main.php';
-    }
+    $operadores = $this->modelo->filtrar($filtros);
+    $total_operadores = ['total' => count($operadores)];
+    $conteo_estados = $this->modelo->contarPorEstado();
+
+    $rangosFiltro = $this->modelo->obtenerRangosActivos();
+    $especialidadesFiltro = $this->modelo->obtenerEspecialidadesActivas();
+    $estadosFiltro = $this->modelo->obtenerEstadosFiltro();
+
+    $contenido = ROOT . '/app/views/admin/operadores/index.php';
+    require ROOT . '/app/views/admin/layouts/main.php';
+}
 
     public function editar()
     {
@@ -185,6 +196,7 @@ class OperadoresController {
         $unidades = $this->modelo->obtenerUnidadesActivas();
         $cursos = $this->modelo->obtenerCursosActivos();
 
+        $especialidadPrincipal = $this->modelo->obtenerEspecialidadPrincipal($id);
         $especialidadesAsignadas = $this->modelo->obtenerEspecialidadesAsignadas($id);
         $unidadesAsignadas = $this->modelo->obtenerUnidadesAsignadas($id);
         $cursosAsignados = $this->modelo->obtenerCursosAsignados($id);
@@ -205,11 +217,12 @@ class OperadoresController {
                 exit;
             }
 
-            $especialidades = $_POST['especialidades'] ?? [];
-            $unidades = $_POST['unidades'] ?? [];
-            $cursos = $_POST['cursos'] ?? [];
+           $especialidades = $_POST['especialidades'] ?? [];
+$especialidadPrincipal = $_POST['especialidad_principal'] ?? null;
+$unidades = $_POST['unidades'] ?? [];
+$cursos = $_POST['cursos'] ?? [];
 
-            $this->modelo->guardarEspecialidadesAsignadas($operadorId, $especialidades);
+            $this->modelo->guardarEspecialidadesAsignadas($operadorId, $especialidades, $especialidadPrincipal);
             $this->modelo->guardarUnidadesAsignadas($operadorId, $unidades);
             $this->modelo->guardarCursosAsignados($operadorId, $cursos);
         }
@@ -217,4 +230,26 @@ class OperadoresController {
         header('Location: ' . BASE_URL . '/operadores');
         exit;
     }
+
+    public function ver()
+{
+    $this->validarSesion();
+
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        echo "❌ ID no recibido";
+        exit;
+    }
+
+    $operador = $this->modelo->obtenerPorId($id);
+
+    if (!$operador) {
+        echo "❌ Operador no encontrado";
+        exit;
+    }
+
+    $contenido = ROOT . '/app/views/admin/operadores/ver.php';
+    require ROOT . '/app/views/admin/layouts/main.php';
+}
 }
