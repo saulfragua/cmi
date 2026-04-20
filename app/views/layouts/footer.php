@@ -80,22 +80,22 @@
                     YouTube
                 </a>
 
-                <!-- FACEBOOK -->
-                <a href="#" target="_blank"
-                    class="flex items-center gap-3 text-white hover:text-blue-500 transition group">
-                    <i class="fab fa-facebook text-xl group-hover:scale-110 transition"></i>
-                    Facebook
-                </a>
+<!-- DISCORD -->
+<a href="https://discord.gg/TU_INVITACION" target="_blank"
+    class="flex items-center gap-3 text-white hover:text-indigo-400 transition group">
+    <i class="fab fa-discord text-xl group-hover:scale-110 transition"></i>
+    Discord
+</a>
 
                 <!-- TIKTOK -->
-                <a href="#" target="_blank"
+                <a href="https://www.tiktok.com/@clan_arma3.latam_cmi?_r=1&_t=ZS-95hGs2QUnDt" target="_blank"
                     class="flex items-center gap-3 text-white hover:text-pink-400 transition group">
                     <i class="fab fa-tiktok text-xl group-hover:scale-110 transition"></i>
                     TikTok
                 </a>
 
                 <!-- INSTAGRAM -->
-                <a href="#" target="_blank"
+                <a href="https://www.instagram.com/cmi.a3?igsh=MTU5Yng3cXZ3eTkwNA==" target="_blank"
                     class="flex items-center gap-3 text-white hover:text-pink-500 transition group">
                     <i class="fab fa-instagram text-xl group-hover:scale-110 transition"></i>
                     Instagram

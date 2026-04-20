@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-04-2026 a las 13:39:47
--- Versión del servidor: 8.0.43
--- Versión de PHP: 8.2.29
+-- Tiempo de generación: 20-04-2026 a las 20:49:45
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,21 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `actividades` (
-  `id` int NOT NULL,
-  `nombre` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
-  `imagen` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tipo` enum('curso','entrenamiento','mision','operacion','ejercicio') COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `tipo` enum('curso','entrenamiento','mision','operacion','ejercicio') NOT NULL,
   `fecha` date NOT NULL,
   `hora_inicio` time NOT NULL,
-  `operador_id` int NOT NULL,
-  `registrado_por` int DEFAULT NULL,
-  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` enum('Borrador','Publicada','Finalizada','Cancelada') COLLATE utf8mb4_general_ci DEFAULT 'Borrador',
-  `total_convocados` int NOT NULL DEFAULT '0',
-  `total_asistieron` int NOT NULL DEFAULT '0',
-  `total_no_asistieron` int NOT NULL DEFAULT '0',
-  `total_pendientes_cierre` int NOT NULL DEFAULT '0',
+  `operador_id` int(11) NOT NULL,
+  `registrado_por` int(11) DEFAULT NULL,
+  `fecha_registro` timestamp NULL DEFAULT current_timestamp(),
+  `estado` enum('Borrador','Publicada','Finalizada','Cancelada') DEFAULT 'Borrador',
+  `total_convocados` int(11) NOT NULL DEFAULT 0,
+  `total_asistieron` int(11) NOT NULL DEFAULT 0,
+  `total_no_asistieron` int(11) NOT NULL DEFAULT 0,
+  `total_pendientes_cierre` int(11) NOT NULL DEFAULT 0,
   `fecha_cierre` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -64,12 +64,12 @@ INSERT INTO `actividades` (`id`, `nombre`, `descripcion`, `imagen`, `tipo`, `fec
 --
 
 CREATE TABLE `actividad_operador` (
-  `id` int NOT NULL,
-  `actividad_id` int NOT NULL,
-  `operador_id` int NOT NULL,
-  `estado` enum('Pendiente','Asiste','No asiste') COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `id` int(11) NOT NULL,
+  `actividad_id` int(11) NOT NULL,
+  `operador_id` int(11) NOT NULL,
+  `estado` enum('Pendiente','Asiste','No asiste') DEFAULT 'Pendiente',
   `fecha_respuesta` datetime DEFAULT NULL,
-  `observacion` text COLLATE utf8mb4_general_ci
+  `observacion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -105,17 +105,17 @@ INSERT INTO `actividad_operador` (`id`, `actividad_id`, `operador_id`, `estado`,
 --
 
 CREATE TABLE `actividad_operador_historico` (
-  `id` int NOT NULL,
-  `actividad_id` int NOT NULL,
-  `operador_id` int DEFAULT NULL,
-  `codigo_operador` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nombre_completo` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `telefono` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado_operador` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado_participacion` enum('Pendiente','Asiste','No asiste') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Pendiente',
-  `observacion` text COLLATE utf8mb4_general_ci,
+  `id` int(11) NOT NULL,
+  `actividad_id` int(11) NOT NULL,
+  `operador_id` int(11) DEFAULT NULL,
+  `codigo_operador` varchar(50) DEFAULT NULL,
+  `nombre_completo` varchar(150) NOT NULL,
+  `telefono` varchar(30) DEFAULT NULL,
+  `estado_operador` varchar(30) DEFAULT NULL,
+  `estado_participacion` enum('Pendiente','Asiste','No asiste') NOT NULL DEFAULT 'Pendiente',
+  `observacion` text DEFAULT NULL,
   `fecha_respuesta` datetime DEFAULT NULL,
-  `fecha_cierre_historico` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `fecha_cierre_historico` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -151,11 +151,11 @@ INSERT INTO `actividad_operador_historico` (`id`, `actividad_id`, `operador_id`,
 --
 
 CREATE TABLE `cursos` (
-  `id` int NOT NULL,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sigla` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imagen` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` enum('Activo','Inactivo') COLLATE utf8mb4_general_ci DEFAULT 'Activo'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `sigla` varchar(20) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -172,11 +172,11 @@ INSERT INTO `cursos` (`id`, `nombre`, `sigla`, `imagen`, `estado`) VALUES
 --
 
 CREATE TABLE `especialidades` (
-  `id` int NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sigla` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imagen` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` enum('Activo','Inactivo') COLLATE utf8mb4_general_ci DEFAULT 'Activo'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `sigla` varchar(10) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -194,8 +194,8 @@ INSERT INTO `especialidades` (`id`, `nombre`, `sigla`, `imagen`, `estado`) VALUE
 --
 
 CREATE TABLE `estados_formulario` (
-  `id` int NOT NULL,
-  `nombre` varchar(20) COLLATE utf8mb4_general_ci NOT NULL
+  `id` int(11) NOT NULL,
+  `nombre` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -215,18 +215,18 @@ INSERT INTO `estados_formulario` (`id`, `nombre`) VALUES
 --
 
 CREATE TABLE `formulario` (
-  `id` int NOT NULL,
-  `nombre_completo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `nombre_completo` varchar(100) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `pais_id` int DEFAULT NULL,
-  `telefono` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `discord` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `indicativo` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado_id` int DEFAULT '1',
-  `observaciones` text COLLATE utf8mb4_general_ci,
-  `evaluado_por` int DEFAULT NULL,
-  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `motivo` text COLLATE utf8mb4_general_ci
+  `pais_id` int(11) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `discord` varchar(100) DEFAULT NULL,
+  `indicativo` varchar(10) DEFAULT NULL,
+  `estado_id` int(11) DEFAULT 1,
+  `observaciones` text DEFAULT NULL,
+  `evaluado_por` int(11) DEFAULT NULL,
+  `fecha_registro` timestamp NULL DEFAULT current_timestamp(),
+  `motivo` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -240,7 +240,8 @@ INSERT INTO `formulario` (`id`, `nombre_completo`, `fecha_nacimiento`, `pais_id`
 (4, 'prueba prueba', '1988-10-10', NULL, '3209839356', NULL, NULL, 3, 'as', 0, '2026-04-09 18:39:46', NULL),
 (5, 'ESTA CARGANDO EL MOTIVO ', '2025-10-10', NULL, '32098888888', NULL, NULL, 3, 'a', 0, '2026-04-09 18:43:52', 'QWEQWEQWEQWEQWEQWEQWEQWEQWE'),
 (6, 'Pedro Picapiedra ', '1980-10-10', NULL, '3209839356', NULL, NULL, 3, 'tiene todo lo necesariopara ingreso', 0, '2026-04-13 18:21:09', 'quiero ingresar por me ha parecido una buena comuniada '),
-(7, 'SAUL FRAGUA', '1988-10-10', 4, '3209839356', 'fragua', '+43', 1, NULL, NULL, '2026-04-19 20:28:03', 'qseqasdasd');
+(7, 'SAUL FRAGUA', '1988-10-10', 4, '3209839356', 'fragua', '+43', 3, 'aprobado', 2, '2026-04-19 20:28:03', 'qseqasdasd'),
+(8, 'SAUL FRAGUA NOVA', '1988-04-10', 11, '3209839356', 'Kratos', '+57', 1, NULL, NULL, '2026-04-20 12:54:31', 'quiero aprender');
 
 -- --------------------------------------------------------
 
@@ -249,18 +250,18 @@ INSERT INTO `formulario` (`id`, `nombre_completo`, `fecha_nacimiento`, `pais_id`
 --
 
 CREATE TABLE `novedades` (
-  `id` int NOT NULL,
-  `operador_id` int NOT NULL,
-  `tipo` enum('Llamado de atención','Felicitación') COLLATE utf8mb4_general_ci NOT NULL,
-  `nivel` enum('Leve','Moderado','Grave','Muy Grave') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `categoria` enum('Disciplinario','Operativo','Administrativo') COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci NOT NULL,
-  `observaciones` text COLLATE utf8mb4_general_ci,
-  `estado` enum('Activo','Cerrado','Anulado') COLLATE utf8mb4_general_ci DEFAULT 'Activo',
-  `registrado_por` int DEFAULT NULL,
-  `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` int(11) NOT NULL,
+  `operador_id` int(11) NOT NULL,
+  `tipo` enum('Llamado de atención','Felicitación') NOT NULL,
+  `nivel` enum('Leve','Moderado','Grave','Muy Grave') DEFAULT NULL,
+  `categoria` enum('Disciplinario','Operativo','Administrativo') DEFAULT NULL,
+  `descripcion` text NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  `estado` enum('Activo','Cerrado','Anulado') DEFAULT 'Activo',
+  `registrado_por` int(11) DEFAULT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_anulacion` datetime DEFAULT NULL,
-  `motivo_anulacion` text COLLATE utf8mb4_general_ci
+  `motivo_anulacion` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -279,32 +280,36 @@ INSERT INTO `novedades` (`id`, `operador_id`, `tipo`, `nivel`, `categoria`, `des
 --
 
 CREATE TABLE `operadores` (
-  `id` int NOT NULL,
-  `codigo` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `clave` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `foto_operador` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nombre_completo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `codigo` varchar(20) DEFAULT NULL,
+  `clave` varchar(255) DEFAULT NULL,
+  `foto_operador` varchar(255) DEFAULT NULL,
+  `nombre_completo` varchar(100) DEFAULT NULL,
+  `alias` varchar(50) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `rango_id` int DEFAULT NULL,
-  `pais` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `telefono` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rol` enum('operador','mando','admin') COLLATE utf8mb4_general_ci DEFAULT 'operador',
+  `rango_id` int(11) DEFAULT NULL,
+  `pais` varchar(50) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `discord` varchar(100) DEFAULT NULL,
+  `steam` varchar(100) DEFAULT NULL,
+  `rol` enum('operador','mando','admin') DEFAULT 'operador',
   `fecha_ultimo_ascenso` date DEFAULT NULL,
-  `fecha_modificacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `usuario_actualiza` int DEFAULT NULL,
-  `estado` enum('Activo','Reserva','Retirado','Suspendido') COLLATE utf8mb4_general_ci DEFAULT 'Activo'
+  `fecha_modificacion` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `usuario_actualiza` int(11) DEFAULT NULL,
+  `estado` enum('Activo','Reserva','Retirado','Suspendido') DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `operadores`
 --
 
-INSERT INTO `operadores` (`id`, `codigo`, `clave`, `foto_operador`, `nombre_completo`, `fecha_nacimiento`, `rango_id`, `pais`, `telefono`, `rol`, `fecha_ultimo_ascenso`, `fecha_modificacion`, `usuario_actualiza`, `estado`) VALUES
-(1, 'CMI0001', '$2y$10$315fHvzjZQzvFytO1fAvm./cd593ltBol307SszQOkdCWLTGRucsS', 'esta_cargando_el_motivo.png', 'ESTA CARGANDO EL MOTIVO', '2025-10-10', NULL, 'Argentina', '32098888888', 'operador', NULL, '2026-04-15 18:11:16', 0, 'Activo'),
-(2, 'CMI0002', '123', '1776432714_Captura_de_pantalla_2026-04-16_124409.png', 'SAUL FRAGUA NOVA', '2001-04-10', 4, 'Colombia', '3209839356', 'mando', '1988-04-10', '2026-04-19 12:34:00', 0, 'Activo'),
-(3, 'CMI0003', '$2y$10$E4c9i2GOkK.lZLmsqqv9rerZkR3r.EpQVhFM3TEsem7fk3aoUPBDa', NULL, 'prueba prueba', '1988-10-10', NULL, 'Colombia', '3209839356', 'operador', NULL, '2026-04-15 18:11:06', 0, 'Activo'),
-(4, 'CMI0004', '$2y$10$WeP5VV5WQYfhAr1Bw11pOeRX9yssgzJZb4/7PSfDK5aTDBlGlfZoq', 'ferney_fragua_nova.png', 'FERNEY FRAGUA NOVA', '1988-04-10', 4, 'Argentina', '32098888888', 'operador', '2026-04-10', '2026-04-15 18:11:05', 0, 'Activo'),
-(5, 'CMI0005', '$2y$10$LR3TB2d56vQtQN6JfbrgO.xxeVqmKUrihj613xuXUkdN8ywVjCULm', 'pedro_picapiedra.jpeg', 'Pedro Picapiedra', '1980-10-10', 4, 'Nicaragua', '3209839356', 'operador', NULL, '2026-04-15 18:11:04', 0, 'Activo');
+INSERT INTO `operadores` (`id`, `codigo`, `clave`, `foto_operador`, `nombre_completo`, `alias`, `fecha_nacimiento`, `rango_id`, `pais`, `telefono`, `discord`, `steam`, `rol`, `fecha_ultimo_ascenso`, `fecha_modificacion`, `usuario_actualiza`, `estado`) VALUES
+(1, 'CMI0001', '$2y$10$315fHvzjZQzvFytO1fAvm./cd593ltBol307SszQOkdCWLTGRucsS', 'esta_cargando_el_motivo.png', 'ESTA CARGANDO EL MOTIVO', NULL, '2025-10-10', NULL, 'Argentina', '32098888888', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:16', 0, 'Activo'),
+(2, 'CMI0002', '123', '1776432714_Captura_de_pantalla_2026-04-16_124409.png', 'SAUL FRAGUA NOVA', NULL, '2001-04-10', 4, 'Colombia', '3209839356', NULL, NULL, 'mando', '1988-04-10', '2026-04-19 12:34:00', 0, 'Activo'),
+(3, 'CMI0003', '$2y$10$E4c9i2GOkK.lZLmsqqv9rerZkR3r.EpQVhFM3TEsem7fk3aoUPBDa', NULL, 'prueba prueba', NULL, '1988-10-10', NULL, 'Colombia', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:06', 0, 'Activo'),
+(4, 'CMI0004', '$2y$10$WeP5VV5WQYfhAr1Bw11pOeRX9yssgzJZb4/7PSfDK5aTDBlGlfZoq', 'ferney_fragua_nova.png', 'FERNEY FRAGUA NOVA', NULL, '1988-04-10', 4, 'Argentina', '32098888888', NULL, NULL, 'operador', '2026-04-10', '2026-04-15 18:11:05', 0, 'Activo'),
+(5, 'CMI0005', '$2y$10$LR3TB2d56vQtQN6JfbrgO.xxeVqmKUrihj613xuXUkdN8ywVjCULm', 'pedro_picapiedra.jpeg', 'Pedro Picapiedra', NULL, '1980-10-10', 4, 'Nicaragua', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:04', 0, 'Activo'),
+(6, 'CMI0006', '$2y$10$kfqhpWz59y2b0usH97uBju.St/0pZFVApItXV8qRUlXVcxXq/iMr6', 'saul_fragua_nova.png', 'SAUL FRAGUA NOVA', 'Fragua', '1988-04-10', 5, 'Colombia', '3209839356', 'Kratos', 'sfragua', 'operador', '2026-04-20', '2026-04-20 18:46:36', 2, 'Activo');
 
 -- --------------------------------------------------------
 
@@ -313,9 +318,9 @@ INSERT INTO `operadores` (`id`, `codigo`, `clave`, `foto_operador`, `nombre_comp
 --
 
 CREATE TABLE `operador_curso` (
-  `id` int NOT NULL,
-  `operador_id` int NOT NULL,
-  `curso_id` int NOT NULL
+  `id` int(11) NOT NULL,
+  `operador_id` int(11) NOT NULL,
+  `curso_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -323,7 +328,8 @@ CREATE TABLE `operador_curso` (
 --
 
 INSERT INTO `operador_curso` (`id`, `operador_id`, `curso_id`) VALUES
-(2, 2, 1);
+(2, 2, 1),
+(3, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -332,10 +338,10 @@ INSERT INTO `operador_curso` (`id`, `operador_id`, `curso_id`) VALUES
 --
 
 CREATE TABLE `operador_especialidad` (
-  `id` int NOT NULL,
-  `operador_id` int NOT NULL,
-  `especialidad_id` int NOT NULL,
-  `principal` tinyint(1) NOT NULL DEFAULT '0'
+  `id` int(11) NOT NULL,
+  `operador_id` int(11) NOT NULL,
+  `especialidad_id` int(11) NOT NULL,
+  `principal` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -344,7 +350,8 @@ CREATE TABLE `operador_especialidad` (
 
 INSERT INTO `operador_especialidad` (`id`, `operador_id`, `especialidad_id`, `principal`) VALUES
 (14, 2, 2, 1),
-(15, 2, 3, 0);
+(15, 2, 3, 0),
+(17, 6, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -353,9 +360,9 @@ INSERT INTO `operador_especialidad` (`id`, `operador_id`, `especialidad_id`, `pr
 --
 
 CREATE TABLE `operador_unidad` (
-  `id` int NOT NULL,
-  `operador_id` int NOT NULL,
-  `unidad_id` int NOT NULL
+  `id` int(11) NOT NULL,
+  `operador_id` int(11) NOT NULL,
+  `unidad_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -366,7 +373,8 @@ INSERT INTO `operador_unidad` (`id`, `operador_id`, `unidad_id`) VALUES
 (6, 2, 2),
 (7, 2, 3),
 (8, 4, 3),
-(9, 5, 2);
+(9, 5, 2),
+(14, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -375,12 +383,12 @@ INSERT INTO `operador_unidad` (`id`, `operador_id`, `unidad_id`) VALUES
 --
 
 CREATE TABLE `paises` (
-  `id` int NOT NULL,
-  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `iso2` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `bandera` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `indicativo` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` enum('Activo','Inactivo') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Activo'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `iso2` varchar(5) DEFAULT NULL,
+  `bandera` varchar(100) DEFAULT NULL,
+  `indicativo` varchar(10) DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -435,11 +443,11 @@ INSERT INTO `paises` (`id`, `nombre`, `iso2`, `bandera`, `indicativo`, `estado`)
 --
 
 CREATE TABLE `rangos` (
-  `id` int NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sigla` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imagen` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` enum('Activo','Inactivo') COLLATE utf8mb4_general_ci DEFAULT 'Activo'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `sigla` varchar(10) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -457,11 +465,11 @@ INSERT INTO `rangos` (`id`, `nombre`, `sigla`, `imagen`, `estado`) VALUES
 --
 
 CREATE TABLE `unidades` (
-  `id` int NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `sigla` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imagen` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` enum('Activo','Inactivo') COLLATE utf8mb4_general_ci DEFAULT 'Activo'
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `sigla` varchar(10) DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `estado` enum('Activo','Inactivo') DEFAULT 'Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -592,91 +600,91 @@ ALTER TABLE `unidades`
 -- AUTO_INCREMENT de la tabla `actividades`
 --
 ALTER TABLE `actividades`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `actividad_operador`
 --
 ALTER TABLE `actividad_operador`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `actividad_operador_historico`
 --
 ALTER TABLE `actividad_operador_historico`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `especialidades`
 --
 ALTER TABLE `especialidades`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_formulario`
 --
 ALTER TABLE `estados_formulario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `formulario`
 --
 ALTER TABLE `formulario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `novedades`
 --
 ALTER TABLE `novedades`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `operadores`
 --
 ALTER TABLE `operadores`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `operador_curso`
 --
 ALTER TABLE `operador_curso`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `operador_especialidad`
 --
 ALTER TABLE `operador_especialidad`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `operador_unidad`
 --
 ALTER TABLE `operador_unidad`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `paises`
 --
 ALTER TABLE `paises`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `rangos`
 --
 ALTER TABLE `rangos`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades`
 --
 ALTER TABLE `unidades`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

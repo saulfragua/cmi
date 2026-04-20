@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../../models/Operador.php';
 
-class OperadoresController {
-
+class OperadoresController
+{
     private $modelo;
 
     public function __construct()
@@ -56,105 +56,127 @@ class OperadoresController {
         return null;
     }
 
-public function index()
-{
-    $this->validarSesion();
-
-$filtros = [
-    'buscar' => $_GET['buscar'] ?? '',
-    'estado' => $_GET['estado'] ?? '',
-    'rango' => $_GET['rango'] ?? '',
-    'especialidad' => $_GET['especialidad'] ?? ''
-];
-
-    $operadores = $this->modelo->filtrar($filtros);
-    $total_operadores = ['total' => count($operadores)];
-    $conteo_estados = $this->modelo->contarPorEstado();
-
-    $rangosFiltro = $this->modelo->obtenerRangosActivos();
-    $especialidadesFiltro = $this->modelo->obtenerEspecialidadesActivas();
-    $estadosFiltro = $this->modelo->obtenerEstadosFiltro();
-
-    $contenido = ROOT . '/app/views/admin/operadores/index.php';
-    require ROOT . '/app/views/admin/layouts/main.php';
-}
-
-    public function editar()
+    public function index()
     {
         $this->validarSesion();
 
-        $id = $_GET['id'] ?? null;
+        $filtros = [
+            'buscar' => $_GET['buscar'] ?? '',
+            'estado' => $_GET['estado'] ?? '',
+            'rango' => $_GET['rango'] ?? '',
+            'especialidad' => $_GET['especialidad'] ?? ''
+        ];
+
+        $operadores = $this->modelo->filtrar($filtros);
+        $total_operadores = ['total' => count($operadores)];
+        $conteo_estados = $this->modelo->contarPorEstado();
+
+        $rangosFiltro = $this->modelo->obtenerRangosActivos();
+        $especialidadesFiltro = $this->modelo->obtenerEspecialidadesActivas();
+        $estadosFiltro = $this->modelo->obtenerEstadosFiltro();
+
+        $contenido = ROOT . '/app/views/admin/operadores/index.php';
+        require ROOT . '/app/views/admin/layouts/main.php';
+    }
+
+public function editar()
+{
+    $this->validarSesion();
+
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        echo "❌ ID no recibido";
+        exit;
+    }
+
+    $operador = $this->modelo->obtenerPorId($id);
+
+    if (!$operador) {
+        echo "❌ Operador no encontrado";
+        exit;
+    }
+
+    $rangos = $this->modelo->obtenerRangosActivos();
+    $especialidades = $this->modelo->obtenerEspecialidadesActivas();
+    $unidades = $this->modelo->obtenerUnidadesActivas();
+    $cursos = $this->modelo->obtenerCursosActivos();
+    $paises = $this->modelo->obtenerPaisesActivos();
+
+    $contenido = ROOT . '/app/views/admin/operadores/editar.php';
+    require ROOT . '/app/views/admin/layouts/main.php';
+}
+
+public function actualizar()
+{
+    $this->validarSesion();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = $_POST['id'] ?? null;
 
         if (!$id) {
             echo "❌ ID no recibido";
             exit;
         }
 
-        $operador = $this->modelo->obtenerPorId($id);
+        $operadorActual = $this->modelo->obtenerPorId($id);
+        $foto = null;
 
-        if (!$operador) {
-            echo "❌ Operador no encontrado";
-            exit;
-        }
+        if (!empty($_FILES['foto_operador']['name'])) {
+            $foto = $this->subirFoto($_FILES['foto_operador'], $_POST['nombre_completo'] ?? 'operador');
 
-        $rangos = $this->modelo->obtenerRangosActivos();
-        $especialidades = $this->modelo->obtenerEspecialidadesActivas();
-        $unidades = $this->modelo->obtenerUnidadesActivas();
-        $cursos = $this->modelo->obtenerCursosActivos();
+            if ($operadorActual && !empty($operadorActual['foto_operador'])) {
+                $rutaAnterior = ROOT . '/public/assets/img/operadores/' . $operadorActual['foto_operador'];
 
-        $contenido = ROOT . '/app/views/admin/operadores/editar.php';
-        require ROOT . '/app/views/admin/layouts/main.php';
-    }
-
-    public function actualizar()
-    {
-        $this->validarSesion();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? null;
-
-            if (!$id) {
-                echo "❌ ID no recibido";
-                exit;
-            }
-
-            $operadorActual = $this->modelo->obtenerPorId($id);
-            $foto = null;
-
-            if (!empty($_FILES['foto_operador']['name'])) {
-                $foto = $this->subirFoto($_FILES['foto_operador'], $_POST['nombre_completo'] ?? 'operador');
-
-                if ($operadorActual && !empty($operadorActual['foto_operador'])) {
-                    $rutaAnterior = ROOT . '/public/assets/img/operadores/' . $operadorActual['foto_operador'];
-
-                    if (file_exists($rutaAnterior) && $operadorActual['foto_operador'] !== $foto) {
-                        unlink($rutaAnterior);
-                    }
+                if (file_exists($rutaAnterior) && $operadorActual['foto_operador'] !== $foto) {
+                    unlink($rutaAnterior);
                 }
             }
-
-            $datos = [
-                'foto_operador' => $foto,
-                'nombre_completo' => trim($_POST['nombre_completo'] ?? ''),
-                'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?? null,
-                'rango_id' => !empty($_POST['rango_id']) ? $_POST['rango_id'] : null,
-                'fecha_ultimo_ascenso' => !empty($_POST['fecha_ultimo_ascenso']) ? $_POST['fecha_ultimo_ascenso'] : null,
-                'especialidad_id' => !empty($_POST['especialidad_id']) ? $_POST['especialidad_id'] : null,
-                'unidad_id' => !empty($_POST['unidad_id']) ? $_POST['unidad_id'] : null,
-                'curso_id' => !empty($_POST['curso_id']) ? $_POST['curso_id'] : null,
-                'pais' => trim($_POST['pais'] ?? ''),
-                'telefono' => trim($_POST['telefono'] ?? ''),
-                'rol' => $_POST['rol'] ?? 'operador',
-                'estado' => $_POST['estado'] ?? 'Activo',
-                'usuario_actualiza' => $_SESSION['user']['id'] ?? null
-            ];
-
-            $this->modelo->actualizar($id, $datos);
         }
 
-        header('Location: ' . BASE_URL . '/operadores');
-        exit;
+        $rangoAnterior = $operadorActual['rango_id'] ?? null;
+        $rangoNuevo = !empty($_POST['rango_id']) ? $_POST['rango_id'] : null;
+
+        $fechaUltimoAscenso = !empty($_POST['fecha_ultimo_ascenso']) ? $_POST['fecha_ultimo_ascenso'] : null;
+
+        // Si cambió de rango, actualiza automáticamente la fecha de ascenso
+        if ((string)$rangoAnterior !== (string)$rangoNuevo && !empty($rangoNuevo)) {
+            $fechaUltimoAscenso = date('Y-m-d');
+        }
+
+        $datos = [
+            'foto_operador' => $foto,
+            'nombre_completo' => trim($_POST['nombre_completo'] ?? ''),
+            'alias' => trim($_POST['alias'] ?? ''),
+            'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?? null,
+            'rango_id' => $rangoNuevo,
+            'fecha_ultimo_ascenso' => $fechaUltimoAscenso,
+            'especialidad_id' => !empty($_POST['especialidad_id']) ? $_POST['especialidad_id'] : null,
+            'unidad_id' => !empty($_POST['unidad_id']) ? $_POST['unidad_id'] : null,
+            'curso_id' => !empty($_POST['curso_id']) ? $_POST['curso_id'] : null,
+            'pais' => trim($_POST['pais'] ?? ''),
+            'telefono' => trim($_POST['telefono'] ?? ''),
+            'discord' => trim($_POST['discord'] ?? ''),
+            'steam' => trim($_POST['steam'] ?? ''),
+            'clave' => trim($_POST['clave'] ?? ''),
+            'rol' => $_POST['rol'] ?? 'operador',
+            'estado' => $_POST['estado'] ?? 'Activo',
+            'usuario_actualiza' => $_SESSION['user']['id'] ?? null
+        ];
+
+        $this->modelo->actualizar($id, $datos);
+
+        if (!empty($datos['clave'])) {
+            $this->modelo->actualizarClave(
+                $id,
+                password_hash($datos['clave'], PASSWORD_DEFAULT)
+            );
+        }
     }
+
+    header('Location: ' . BASE_URL . '/operadores');
+    exit;
+}
 
     public function cambiarEstado()
     {
@@ -174,7 +196,7 @@ $filtros = [
         exit;
     }
 
-        public function asignar()
+    public function asignar()
     {
         $this->validarSesion();
 
@@ -217,10 +239,10 @@ $filtros = [
                 exit;
             }
 
-           $especialidades = $_POST['especialidades'] ?? [];
-$especialidadPrincipal = $_POST['especialidad_principal'] ?? null;
-$unidades = $_POST['unidades'] ?? [];
-$cursos = $_POST['cursos'] ?? [];
+            $especialidades = $_POST['especialidades'] ?? [];
+            $especialidadPrincipal = $_POST['especialidad_principal'] ?? null;
+            $unidades = $_POST['unidades'] ?? [];
+            $cursos = $_POST['cursos'] ?? [];
 
             $this->modelo->guardarEspecialidadesAsignadas($operadorId, $especialidades, $especialidadPrincipal);
             $this->modelo->guardarUnidadesAsignadas($operadorId, $unidades);
@@ -232,26 +254,24 @@ $cursos = $_POST['cursos'] ?? [];
     }
 
     public function ver()
-{
-    $this->validarSesion();
+    {
+        $this->validarSesion();
 
-    $id = $_GET['id'] ?? null;
+        $id = $_GET['id'] ?? null;
 
-    if (!$id) {
-        echo "❌ ID no recibido";
-        exit;
+        if (!$id) {
+            echo "❌ ID no recibido";
+            exit;
+        }
+
+        $operador = $this->modelo->obtenerPorId($id);
+
+        if (!$operador) {
+            echo "❌ Operador no encontrado";
+            exit;
+        }
+
+        $contenido = ROOT . '/app/views/admin/operadores/ver.php';
+        require ROOT . '/app/views/admin/layouts/main.php';
     }
-
-    $operador = $this->modelo->obtenerPorId($id);
-
-    if (!$operador) {
-        echo "❌ Operador no encontrado";
-        exit;
-    }
-
-    $contenido = ROOT . '/app/views/admin/operadores/ver.php';
-    require ROOT . '/app/views/admin/layouts/main.php';
-}
-
-
 }

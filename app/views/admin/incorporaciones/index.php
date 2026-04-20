@@ -1,56 +1,23 @@
 <div class="p-3 md:p-4 text-white bg-black min-h-screen">
 
     <?php
-    function obtenerCodigoPais($pais) {
-        $mapa = [
-            'Colombia' => '57',
-            'Argentina' => '54',
-            'México' => '52',
-            'Mexico' => '52',
-            'Perú' => '51',
-            'Peru' => '51',
-            'Chile' => '56',
-            'Ecuador' => '593',
-            'Estados Unidos' => '1',
-            'España' => '34',
-            'Espana' => '34',
-            'Venezuela' => '58',
-            'Bolivia' => '591',
-            'Paraguay' => '595',
-            'Uruguay' => '598',
-            'Brasil' => '55',
-            'Panamá' => '507',
-            'Panama' => '507',
-            'Costa Rica' => '506',
-            'Guatemala' => '502',
-            'Honduras' => '504',
-            'El Salvador' => '503',
-            'Nicaragua' => '505',
-            'República Dominicana' => '1',
-            'Republica Dominicana' => '1',
-            'Cuba' => '53'
-        ];
-
-        return $mapa[trim($pais)] ?? '57';
-    }
-
     function limpiarNumero($numero) {
-        return preg_replace('/[^0-9]/', '', $numero);
+        return preg_replace('/[^0-9]/', '', (string)$numero);
     }
 
-    function construirWhatsapp($pais, $telefono) {
-        $codigo = obtenerCodigoPais($pais);
+    function construirWhatsapp($indicativo, $telefono) {
+        $codigo = limpiarNumero($indicativo);
         $numero = limpiarNumero($telefono);
 
         if (empty($numero)) {
             return '';
         }
 
-        if (strpos($numero, $codigo) === 0) {
+        if (!empty($codigo) && strpos($numero, $codigo) === 0) {
             return $numero;
         }
 
-        return $codigo . $numero;
+        return !empty($codigo) ? $codigo . $numero : $numero;
     }
     ?>
 
@@ -68,8 +35,10 @@
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">#</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Nombre</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Fecha Nac.</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Edad.</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">País</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Teléfono</th>
+                    <th class="border border-[#2b3d57] px-2 py-1 text-left">Discord</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Motivo</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Recepción</th>
                     <th class="border border-[#2b3d57] px-2 py-1 text-left">Tiempo</th>
@@ -84,60 +53,86 @@
                     <?php foreach ($formularios as $f): ?>
 
                         <?php
-                            $fecha_registro = new DateTime($f['fecha_registro']);
+                            $fechaRegistroRaw = $f['fecha_registro'] ?? null;
+                            $fecha_registro = !empty($fechaRegistroRaw) ? new DateTime($fechaRegistroRaw) : new DateTime();
                             $ahora = new DateTime();
                             $intervalo = $fecha_registro->diff($ahora);
                             $tiempo = $intervalo->d . "d " . $intervalo->h . "h";
 
-                            $estado = trim($f['estado'] ?? 'Pendiente');
+                            $estadoId = (int)($f['estado_id'] ?? 1);
                             $estadoTexto = 'Pendiente';
                             $estadoColor = 'text-yellow-400';
                             $estadoPunto = '🟡';
 
-                            if ($estado === 'En revision' || $estado === 'En revisión') {
+                            if ($estadoId === 2) {
                                 $estadoTexto = 'En revisión';
                                 $estadoColor = 'text-blue-400';
                                 $estadoPunto = '🔵';
-                            } elseif ($estado === 'Aprobado') {
+                            } elseif ($estadoId === 3) {
                                 $estadoTexto = 'Aprobado';
                                 $estadoColor = 'text-green-400';
                                 $estadoPunto = '🟢';
-                            } elseif ($estado === 'Rechazado') {
+                            } elseif ($estadoId === 4) {
                                 $estadoTexto = 'Rechazado';
                                 $estadoColor = 'text-red-400';
                                 $estadoPunto = '🔴';
                             }
 
+                            $paisNombre = $f['pais_nombre'] ?? '';
+                            $paisBandera = $f['pais_bandera'] ?? '';
+                            $paisIndicativo = $f['pais_indicativo'] ?? '';
                             $telefonoMostrar = $f['telefono'] ?? '';
-                            $whatsappNumero = construirWhatsapp($f['pais'] ?? '', $telefonoMostrar);
+                            $discord = $f['discord'] ?? '';
+
+                            $whatsappNumero = construirWhatsapp($paisIndicativo, $telefonoMostrar);
                             $mensajeWhatsapp = rawurlencode("Hola, te contactamos desde CMI respecto a tu solicitud.");
                             $linkWhatsapp = !empty($whatsappNumero)
                                 ? "https://wa.me/{$whatsappNumero}?text={$mensajeWhatsapp}"
                                 : '';
+
+                                $edad = 'N/A';
+
+if (!empty($f['fecha_nacimiento'])) {
+    $fechaNacimiento = new DateTime($f['fecha_nacimiento']);
+    $hoy = new DateTime();
+    $edad = $hoy->diff($fechaNacimiento)->y;
+}
                         ?>
 
                         <tr class="hover:bg-[#0b1220]">
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
-                                <?= htmlspecialchars($f['id']) ?>
+                                <?= htmlspecialchars((string)($f['id'] ?? '')) ?>
                             </td>
 
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
-                                <?= htmlspecialchars($f['nombre_completo']) ?>
+                                <?= htmlspecialchars($f['nombre_completo'] ?? '') ?>
                             </td>
 
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
-                                <?= htmlspecialchars($f['fecha_nacimiento']) ?>
+                                <?= htmlspecialchars($f['fecha_nacimiento'] ?? '') ?>
                             </td>
-
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
-                                <?= htmlspecialchars($f['pais']) ?>
-                            </td>
+    <?= htmlspecialchars($edad) ?>
+</td>
+
+<td class="border border-[#2b3d57] px-3 py-1">
+    <div class="flex items-center gap-2 w-max">
+        <?php if (!empty($paisBandera)): ?>
+            <img src="<?= BASE_URL . '/assets/img/nacionalidad/' . htmlspecialchars($paisBandera) ?>"
+                 class="w-5 h-4 object-cover rounded-sm border border-gray-700 shrink-0">
+        <?php endif; ?>
+
+        <span class="text-white whitespace-nowrap">
+            <?= htmlspecialchars($paisNombre) ?>
+        </span>
+    </div>
+</td>
 
                             <!-- TELÉFONO + WHATSAPP -->
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
                                     <span class="text-white">
-                                        <?= htmlspecialchars($telefonoMostrar) ?>
+                                        <?= htmlspecialchars(trim(($paisIndicativo ? $paisIndicativo . ' ' : '') . $telefonoMostrar)) ?>
                                     </span>
 
                                     <?php if (!empty($linkWhatsapp)): ?>
@@ -159,10 +154,14 @@
                                 </div>
                             </td>
 
+                            <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
+                                <?= !empty($discord) ? htmlspecialchars($discord) : '<span class="text-gray-500 text-xs">N/A</span>' ?>
+                            </td>
+
                             <!-- MOTIVO -->
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
                                 <?php if (!empty($f['motivo'])): ?>
-                                    <button onclick="verMotivo(`<?= htmlspecialchars($f['motivo'], ENT_QUOTES) ?>`)"
+                                    <button onclick="verMotivo(`<?= htmlspecialchars($f['motivo'] ?? '', ENT_QUOTES) ?>`)"
                                             class="bg-blue-700 hover:bg-blue-800 text-white text-xs px-3 py-1">
                                         Ver
                                     </button>
@@ -173,12 +172,12 @@
 
                             <!-- RECEPCIÓN -->
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
-                                <?= date('Y-m-d H:i', strtotime($f['fecha_registro'])) ?>
+                                <?= !empty($fechaRegistroRaw) ? date('Y-m-d H:i', strtotime($fechaRegistroRaw)) : 'N/A' ?>
                             </td>
 
                             <!-- TIEMPO -->
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap text-yellow-400">
-                                <?= $tiempo ?>
+                                <?= htmlspecialchars($tiempo) ?>
                             </td>
 
                             <!-- ESTADO -->
@@ -193,7 +192,7 @@
                                 <?php if ($estadoTexto === 'Aprobado' || $estadoTexto === 'Rechazado'): ?>
                                     <span class="text-gray-500">Finalizado</span>
                                 <?php else: ?>
-                                    <select onchange="abrirModal(<?= (int)$f['id'] ?>, this.value)"
+                                    <select onchange="abrirModal(<?= (int)($f['id'] ?? 0) ?>, this.value)"
                                             class="bg-black border border-gray-500 text-white text-xs px-2 py-[2px] outline-none">
                                         <option value="">Cambiar</option>
                                         <option value="2">En revisión</option>
@@ -206,7 +205,7 @@
                             <!-- OBSERVACIONES -->
                             <td class="border border-[#2b3d57] px-2 py-1 whitespace-nowrap">
                                 <?php if (!empty($f['observaciones'])): ?>
-                                    <button onclick="verObservaciones(`<?= htmlspecialchars($f['observaciones'], ENT_QUOTES) ?>`)"
+                                    <button onclick="verObservaciones(`<?= htmlspecialchars($f['observaciones'] ?? '', ENT_QUOTES) ?>`)"
                                             class="bg-purple-700 hover:bg-purple-800 text-white text-xs px-3 py-1">
                                         Ver
                                     </button>
@@ -219,7 +218,7 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="11" class="border border-[#2b3d57] px-2 py-3 text-center text-gray-400">
+                        <td colspan="12" class="border border-[#2b3d57] px-2 py-3 text-center text-gray-400">
                             No hay incorporaciones registradas
                         </td>
                     </tr>

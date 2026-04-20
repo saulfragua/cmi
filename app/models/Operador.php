@@ -25,7 +25,7 @@ class Operador
             ':telefono' => $telefono
         ]);
 
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function obtenerTodos()
@@ -33,6 +33,9 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    p.nombre AS pais_nombre,
+                    p.bandera AS pais_bandera,
+                    p.indicativo AS pais_indicativo,
                     TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
                         SELECT e.nombre
@@ -56,12 +59,13 @@ class Operador
                     ) AS cursos
                 FROM operadores o
                 LEFT JOIN rangos r ON o.rango_id = r.id
+                LEFT JOIN paises p ON p.nombre = o.pais
                 ORDER BY o.id DESC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerPorId($id)
@@ -69,6 +73,9 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    p.nombre AS pais_nombre,
+                    p.bandera AS pais_bandera,
+                    p.indicativo AS pais_indicativo,
                     TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
                         SELECT e.nombre
@@ -98,6 +105,7 @@ class Operador
                     ) AS cursos
                 FROM operadores o
                 LEFT JOIN rangos r ON o.rango_id = r.id
+                LEFT JOIN paises p ON p.nombre = o.pais
                 WHERE o.id = :id
                 LIMIT 1";
 
@@ -106,54 +114,63 @@ class Operador
             ':id' => $id
         ]);
 
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function crear($datos)
     {
         $sql = "INSERT INTO operadores (
                     codigo,
+                    clave,
                     foto_operador,
                     nombre_completo,
+                    alias,
                     fecha_nacimiento,
                     rango_id,
-                    fecha_ultimo_ascenso,
                     pais,
                     telefono,
+                    discord,
+                    steam,
                     rol,
-                    estado,
+                    fecha_ultimo_ascenso,
                     usuario_actualiza,
-                    clave
+                    estado
                 ) VALUES (
                     :codigo,
+                    :clave,
                     :foto_operador,
                     :nombre_completo,
+                    :alias,
                     :fecha_nacimiento,
                     :rango_id,
-                    :fecha_ultimo_ascenso,
                     :pais,
                     :telefono,
+                    :discord,
+                    :steam,
                     :rol,
-                    :estado,
+                    :fecha_ultimo_ascenso,
                     :usuario_actualiza,
-                    :clave
+                    :estado
                 )";
 
         $stmt = $this->db->prepare($sql);
 
         return $stmt->execute([
             ':codigo' => $datos['codigo'],
+            ':clave' => $datos['clave'] ?? null,
             ':foto_operador' => $datos['foto_operador'] ?? null,
             ':nombre_completo' => $datos['nombre_completo'],
+            ':alias' => $datos['alias'] ?? null,
             ':fecha_nacimiento' => $datos['fecha_nacimiento'],
             ':rango_id' => $datos['rango_id'] ?? null,
-            ':fecha_ultimo_ascenso' => $datos['fecha_ultimo_ascenso'] ?? null,
-            ':pais' => $datos['pais'],
-            ':telefono' => $datos['telefono'],
+            ':pais' => $datos['pais'] ?? null,
+            ':telefono' => $datos['telefono'] ?? null,
+            ':discord' => $datos['discord'] ?? null,
+            ':steam' => $datos['steam'] ?? null,
             ':rol' => $datos['rol'] ?? 'operador',
-            ':estado' => $datos['estado'] ?? 'Activo',
+            ':fecha_ultimo_ascenso' => $datos['fecha_ultimo_ascenso'] ?? null,
             ':usuario_actualiza' => $datos['usuario_actualiza'] ?? null,
-            ':clave' => $datos['clave'] ?? null
+            ':estado' => $datos['estado'] ?? 'Activo'
         ]);
     }
 
@@ -163,11 +180,14 @@ class Operador
             $sql = "UPDATE operadores SET
                         foto_operador = :foto_operador,
                         nombre_completo = :nombre_completo,
+                        alias = :alias,
                         fecha_nacimiento = :fecha_nacimiento,
                         rango_id = :rango_id,
                         fecha_ultimo_ascenso = :fecha_ultimo_ascenso,
                         pais = :pais,
                         telefono = :telefono,
+                        discord = :discord,
+                        steam = :steam,
                         rol = :rol,
                         estado = :estado,
                         usuario_actualiza = :usuario_actualiza
@@ -175,11 +195,14 @@ class Operador
         } else {
             $sql = "UPDATE operadores SET
                         nombre_completo = :nombre_completo,
+                        alias = :alias,
                         fecha_nacimiento = :fecha_nacimiento,
                         rango_id = :rango_id,
                         fecha_ultimo_ascenso = :fecha_ultimo_ascenso,
                         pais = :pais,
                         telefono = :telefono,
+                        discord = :discord,
+                        steam = :steam,
                         rol = :rol,
                         estado = :estado,
                         usuario_actualiza = :usuario_actualiza
@@ -189,16 +212,19 @@ class Operador
         $stmt = $this->db->prepare($sql);
 
         $params = [
-            ':nombre_completo' => $datos['nombre_completo'],
-            ':fecha_nacimiento' => $datos['fecha_nacimiento'],
-            ':rango_id' => $datos['rango_id'] ?? null,
+            ':nombre_completo'      => $datos['nombre_completo'] ?? null,
+            ':alias'                => $datos['alias'] ?? null,
+            ':fecha_nacimiento'     => $datos['fecha_nacimiento'] ?? null,
+            ':rango_id'             => $datos['rango_id'] ?? null,
             ':fecha_ultimo_ascenso' => $datos['fecha_ultimo_ascenso'] ?? null,
-            ':pais' => $datos['pais'],
-            ':telefono' => $datos['telefono'],
-            ':rol' => $datos['rol'],
-            ':estado' => $datos['estado'],
-            ':usuario_actualiza' => $datos['usuario_actualiza'] ?? null,
-            ':id' => $id
+            ':pais'                 => $datos['pais'] ?? null,
+            ':telefono'             => $datos['telefono'] ?? null,
+            ':discord'              => $datos['discord'] ?? null,
+            ':steam'                => $datos['steam'] ?? null,
+            ':rol'                  => $datos['rol'] ?? 'operador',
+            ':estado'               => $datos['estado'] ?? 'Activo',
+            ':usuario_actualiza'    => $datos['usuario_actualiza'] ?? null,
+            ':id'                   => $id
         ];
 
         if (!empty($datos['foto_operador'])) {
@@ -240,7 +266,7 @@ class Operador
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function contarPorEstado()
@@ -252,7 +278,7 @@ class Operador
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerPorEstado($estado)
@@ -260,6 +286,9 @@ class Operador
         $sql = "SELECT 
                     o.*,
                     r.nombre AS rango,
+                    p.nombre AS pais_nombre,
+                    p.bandera AS pais_bandera,
+                    p.indicativo AS pais_indicativo,
                     TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
                     (
                         SELECT e.nombre
@@ -283,6 +312,7 @@ class Operador
                     ) AS cursos
                 FROM operadores o
                 LEFT JOIN rangos r ON o.rango_id = r.id
+                LEFT JOIN paises p ON p.nombre = o.pais
                 WHERE o.estado = :estado
                 ORDER BY o.id DESC";
 
@@ -291,7 +321,7 @@ class Operador
             ':estado' => $estado
         ]);
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerPorCodigo($codigo)
@@ -302,55 +332,59 @@ class Operador
             ':codigo' => $codigo
         ]);
 
-        return $stmt->fetch();
-    }
-
-    public function obtenerUltimoCodigo()
-    {
-        $sql = "SELECT codigo
-                FROM operadores
-                WHERE codigo LIKE 'CMI%'
-                ORDER BY id DESC
-                LIMIT 1";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetch();
-    }
-
-    public function generarCodigo()
-    {
-        $ultimo = $this->obtenerUltimoCodigo();
-
-        if (!$ultimo || empty($ultimo['codigo'])) {
-            return 'CMI0001';
-        }
-
-        $numero = (int) str_replace('CMI', '', $ultimo['codigo']);
-        $numero++;
-
-        return 'CMI' . str_pad($numero, 4, '0', STR_PAD_LEFT);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function obtenerRangosActivos()
     {
-        return $this->db->query("SELECT id, nombre FROM rangos WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
+        $sql = "SELECT id, nombre
+                FROM rangos
+                WHERE estado = 'Activo'
+                ORDER BY nombre ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerEspecialidadesActivas()
     {
-        return $this->db->query("SELECT id, nombre, sigla FROM especialidades WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
+        $sql = "SELECT id, nombre
+                FROM especialidades
+                WHERE estado = 'Activo'
+                ORDER BY nombre ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerUnidadesActivas()
     {
-        return $this->db->query("SELECT id, nombre FROM unidades WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
+        $sql = "SELECT id, nombre
+                FROM unidades
+                WHERE estado = 'Activo'
+                ORDER BY nombre ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerCursosActivos()
     {
-        return $this->db->query("SELECT id, nombre FROM cursos WHERE estado = 'Activo' ORDER BY nombre ASC")->fetchAll();
+        $sql = "SELECT id, nombre
+                FROM cursos
+                WHERE estado = 'Activo'
+                ORDER BY nombre ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtenerEspecialidadesAsignadas($operadorId)
@@ -364,21 +398,7 @@ class Operador
             ':operador_id' => $operadorId
         ]);
 
-        return array_column($stmt->fetchAll(), 'especialidad_id');
-    }
-
-    public function obtenerCursosAsignados($operadorId)
-    {
-        $sql = "SELECT curso_id
-                FROM operador_curso
-                WHERE operador_id = :operador_id";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':operador_id' => $operadorId
-        ]);
-
-        return array_column($stmt->fetchAll(), 'curso_id');
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'especialidad_id');
     }
 
     public function obtenerUnidadesAsignadas($operadorId)
@@ -392,10 +412,24 @@ class Operador
             ':operador_id' => $operadorId
         ]);
 
-        return array_column($stmt->fetchAll(), 'unidad_id');
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'unidad_id');
     }
 
-    public function guardarEspecialidadesAsignadas($operadorId, $especialidades = [], $principalId = null)
+    public function obtenerCursosAsignados($operadorId)
+    {
+        $sql = "SELECT curso_id
+                FROM operador_curso
+                WHERE operador_id = :operador_id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':operador_id' => $operadorId
+        ]);
+
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'curso_id');
+    }
+
+    public function guardarEspecialidadesAsignadas($operadorId, $especialidades, $especialidadPrincipal = null)
     {
         $sqlDelete = "DELETE FROM operador_especialidad WHERE operador_id = :operador_id";
         $stmtDelete = $this->db->prepare($sqlDelete);
@@ -412,35 +446,13 @@ class Operador
                 $stmtInsert->execute([
                     ':operador_id' => $operadorId,
                     ':especialidad_id' => $especialidadId,
-                    ':principal' => ((string) $principalId === (string) $especialidadId) ? 1 : 0
+                    ':principal' => ((int)$especialidadPrincipal === (int)$especialidadId) ? 1 : 0
                 ]);
             }
         }
     }
 
-    public function guardarCursosAsignados($operadorId, $cursos = [])
-    {
-        $sqlDelete = "DELETE FROM operador_curso WHERE operador_id = :operador_id";
-        $stmtDelete = $this->db->prepare($sqlDelete);
-        $stmtDelete->execute([
-            ':operador_id' => $operadorId
-        ]);
-
-        if (!empty($cursos)) {
-            $sqlInsert = "INSERT INTO operador_curso (operador_id, curso_id)
-                          VALUES (:operador_id, :curso_id)";
-            $stmtInsert = $this->db->prepare($sqlInsert);
-
-            foreach ($cursos as $cursoId) {
-                $stmtInsert->execute([
-                    ':operador_id' => $operadorId,
-                    ':curso_id' => $cursoId
-                ]);
-            }
-        }
-    }
-
-    public function guardarUnidadesAsignadas($operadorId, $unidades = [])
+    public function guardarUnidadesAsignadas($operadorId, $unidades)
     {
         $sqlDelete = "DELETE FROM operador_unidad WHERE operador_id = :operador_id";
         $stmtDelete = $this->db->prepare($sqlDelete);
@@ -462,6 +474,28 @@ class Operador
         }
     }
 
+    public function guardarCursosAsignados($operadorId, $cursos)
+    {
+        $sqlDelete = "DELETE FROM operador_curso WHERE operador_id = :operador_id";
+        $stmtDelete = $this->db->prepare($sqlDelete);
+        $stmtDelete->execute([
+            ':operador_id' => $operadorId
+        ]);
+
+        if (!empty($cursos)) {
+            $sqlInsert = "INSERT INTO operador_curso (operador_id, curso_id)
+                          VALUES (:operador_id, :curso_id)";
+            $stmtInsert = $this->db->prepare($sqlInsert);
+
+            foreach ($cursos as $cursoId) {
+                $stmtInsert->execute([
+                    ':operador_id' => $operadorId,
+                    ':curso_id' => $cursoId
+                ]);
+            }
+        }
+    }
+
     public function obtenerEspecialidadPrincipal($operadorId)
     {
         $sql = "SELECT especialidad_id
@@ -475,84 +509,83 @@ class Operador
             ':operador_id' => $operadorId
         ]);
 
-        $fila = $stmt->fetch();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
         return $fila ? $fila['especialidad_id'] : null;
     }
 
+    public function filtrar($filtros = [])
+    {
+        $where = [];
+        $params = [];
 
-public function filtrar($filtros = [])
-{
-    $where = [];
-    $params = [];
+        if (!empty($filtros['buscar'])) {
+            $where[] = "o.nombre_completo LIKE :buscar";
+            $params[':buscar'] = '%' . trim($filtros['buscar']) . '%';
+        }
 
-    // Buscar por nombre completo
-    if (!empty($filtros['buscar'])) {
-        $where[] = "o.nombre_completo LIKE :buscar";
-        $params[':buscar'] = '%' . trim($filtros['buscar']) . '%';
+        if (!empty($filtros['estado'])) {
+            $where[] = "o.estado = :estado";
+            $params[':estado'] = trim($filtros['estado']);
+        }
+
+        if (!empty($filtros['rango'])) {
+            $where[] = "o.rango_id = :rango";
+            $params[':rango'] = (int)$filtros['rango'];
+        }
+
+        if (!empty($filtros['especialidad'])) {
+            $where[] = "EXISTS (
+                SELECT 1
+                FROM operador_especialidad oe
+                WHERE oe.operador_id = o.id
+                  AND oe.principal = 1
+                  AND oe.especialidad_id = :especialidad
+            )";
+            $params[':especialidad'] = (int)$filtros['especialidad'];
+        }
+
+        $sql = "SELECT 
+                    o.*,
+                    r.nombre AS rango,
+                    p.nombre AS pais_nombre,
+                    p.bandera AS pais_bandera,
+                    p.indicativo AS pais_indicativo,
+                    TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
+                    (
+                        SELECT e.nombre
+                        FROM operador_especialidad oe
+                        INNER JOIN especialidades e ON oe.especialidad_id = e.id
+                        WHERE oe.operador_id = o.id
+                          AND oe.principal = 1
+                        LIMIT 1
+                    ) AS especialidad_principal,
+                    (
+                        SELECT GROUP_CONCAT(DISTINCT u.nombre SEPARATOR ', ')
+                        FROM operador_unidad ou
+                        INNER JOIN unidades u ON ou.unidad_id = u.id
+                        WHERE ou.operador_id = o.id
+                    ) AS unidades,
+                    (
+                        SELECT GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ')
+                        FROM operador_curso oc
+                        INNER JOIN cursos c ON oc.curso_id = c.id
+                        WHERE oc.operador_id = o.id
+                    ) AS cursos
+                FROM operadores o
+                LEFT JOIN rangos r ON o.rango_id = r.id
+                LEFT JOIN paises p ON p.nombre = o.pais";
+
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(' AND ', $where);
+        }
+
+        $sql .= " ORDER BY o.id DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // Filtrar por estado
-    if (!empty($filtros['estado'])) {
-        $where[] = "o.estado = :estado";
-        $params[':estado'] = trim($filtros['estado']);
-    }
-
-    // Filtrar por rango
-    if (!empty($filtros['rango'])) {
-        $where[] = "o.rango_id = :rango";
-        $params[':rango'] = (int) $filtros['rango'];
-    }
-
-    // Filtrar por especialidad principal
-    if (!empty($filtros['especialidad'])) {
-        $where[] = "EXISTS (
-            SELECT 1
-            FROM operador_especialidad oe
-            WHERE oe.operador_id = o.id
-              AND oe.principal = 1
-              AND oe.especialidad_id = :especialidad
-        )";
-        $params[':especialidad'] = (int) $filtros['especialidad'];
-    }
-
-    $sql = "SELECT 
-                o.*,
-                r.nombre AS rango,
-                TIMESTAMPDIFF(YEAR, o.fecha_nacimiento, CURDATE()) AS edad,
-                (
-                    SELECT e.nombre
-                    FROM operador_especialidad oe
-                    INNER JOIN especialidades e ON oe.especialidad_id = e.id
-                    WHERE oe.operador_id = o.id
-                      AND oe.principal = 1
-                    LIMIT 1
-                ) AS especialidad_principal,
-                (
-                    SELECT GROUP_CONCAT(DISTINCT u.nombre SEPARATOR ', ')
-                    FROM operador_unidad ou
-                    INNER JOIN unidades u ON ou.unidad_id = u.id
-                    WHERE ou.operador_id = o.id
-                ) AS unidades,
-                (
-                    SELECT GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ')
-                    FROM operador_curso oc
-                    INNER JOIN cursos c ON oc.curso_id = c.id
-                    WHERE oc.operador_id = o.id
-                ) AS cursos
-            FROM operadores o
-            LEFT JOIN rangos r ON o.rango_id = r.id";
-
-    if (!empty($where)) {
-        $sql .= " WHERE " . implode(' AND ', $where);
-    }
-
-    $sql .= " ORDER BY o.id DESC";
-
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute($params);
-
-    return $stmt->fetchAll();
-}
 
     public function obtenerEstadosFiltro()
     {
@@ -564,101 +597,119 @@ public function filtrar($filtros = [])
         ];
     }
 
+    public function actualizarFoto($id, $foto)
+    {
+        $sql = "UPDATE operadores
+                SET foto_operador = :foto,
+                    fecha_modificacion = CURRENT_TIMESTAMP
+                WHERE id = :id";
 
+        $stmt = $this->db->prepare($sql);
 
-public function actualizarFoto($id, $foto)
+        return $stmt->execute([
+            ':foto' => $foto,
+            ':id'   => $id
+        ]);
+    }
+
+    public function actualizarPerfilOperador($id, $datos)
+    {
+        $sql = "UPDATE operadores
+                SET nombre_completo = :nombre_completo,
+                    alias = :alias,
+                    fecha_nacimiento = :fecha_nacimiento,
+                    telefono = :telefono,
+                    pais = :pais,
+                    discord = :discord,
+                    steam = :steam,
+                    fecha_modificacion = CURRENT_TIMESTAMP
+                WHERE id = :id";
+
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute([
+            ':nombre_completo'  => $datos['nombre_completo'],
+            ':alias'            => $datos['alias'] ?? null,
+            ':fecha_nacimiento' => $datos['fecha_nacimiento'],
+            ':telefono'         => $datos['telefono'],
+            ':pais'             => $datos['pais'],
+            ':discord'          => $datos['discord'] ?? null,
+            ':steam'            => $datos['steam'] ?? null,
+            ':id'               => $id
+        ]);
+    }
+
+    public function obtenerHistorialActividades($operadorId)
+    {
+        $sql = "SELECT 
+                    a.id,
+                    a.nombre,
+                    a.tipo,
+                    a.fecha,
+                    a.hora_inicio,
+                    a.estado AS estado_actividad,
+                    ao.estado AS estado_participacion,
+                    ao.fecha_respuesta,
+                    ao.observacion
+                FROM actividad_operador ao
+                INNER JOIN actividades a ON a.id = ao.actividad_id
+                WHERE ao.operador_id = :operador_id
+                  AND ao.estado = 'Asiste'
+                ORDER BY a.fecha DESC, a.hora_inicio DESC
+                LIMIT 5";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':operador_id' => $operadorId
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerNovedadesPorOperador($operadorId)
+    {
+        $sql = "SELECT 
+                    n.id,
+                    n.tipo,
+                    n.descripcion,
+                    n.motivo_anulacion,
+                    n.estado,
+                    n.fecha_registro,
+                    u.nombre_completo AS registrado_por_nombre
+                FROM novedades n
+                LEFT JOIN operadores u ON n.registrado_por = u.id
+                WHERE n.operador_id = :operador_id
+                ORDER BY n.fecha_registro DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':operador_id' => $operadorId
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function actualizarClave($id, $clave)
+    {
+        $sql = "UPDATE operadores SET clave = :clave WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute([
+            ':clave' => $clave,
+            ':id' => $id
+        ]);
+    }
+
+    public function obtenerPaisesActivos()
 {
-    $sql = "UPDATE operadores
-            SET foto_operador = :foto,
-                fecha_modificacion = CURRENT_TIMESTAMP
-            WHERE id = :id";
+    $sql = "SELECT id, nombre, iso2, bandera, indicativo
+            FROM paises
+            WHERE estado = 'Activo'
+            ORDER BY nombre ASC";
 
     $stmt = $this->db->prepare($sql);
-
-    return $stmt->execute([
-        ':foto' => $foto,
-        ':id'   => $id
-    ]);
-}
-public function actualizarPerfilOperador($id, $datos)
-{
-    $sql = "UPDATE operadores
-            SET nombre_completo = :nombre_completo,
-                fecha_nacimiento = :fecha_nacimiento,
-                telefono = :telefono,
-                pais = :pais,
-                fecha_modificacion = CURRENT_TIMESTAMP
-            WHERE id = :id";
-
-    $stmt = $this->db->prepare($sql);
-
-    return $stmt->execute([
-        ':nombre_completo'  => $datos['nombre_completo'],
-        ':fecha_nacimiento' => $datos['fecha_nacimiento'],
-        ':telefono'         => $datos['telefono'],
-        ':pais'             => $datos['pais'],
-        ':id'               => $id
-    ]);
-}
-
-public function obtenerHistorialActividades($operadorId)
-{
-    $sql = "SELECT 
-                a.id,
-                a.nombre,
-                a.tipo,
-                a.fecha,
-                a.hora_inicio,
-                a.estado AS estado_actividad,
-                ao.estado AS estado_participacion,
-                ao.fecha_respuesta,
-                ao.observacion
-            FROM actividad_operador ao
-            INNER JOIN actividades a ON a.id = ao.actividad_id
-            WHERE ao.operador_id = :operador_id
-              AND ao.estado = 'Asiste'
-            ORDER BY a.fecha DESC, a.hora_inicio DESC
-            LIMIT 5";
-
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute([
-        ':operador_id' => $operadorId
-    ]);
+    $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-public function obtenerNovedadesPorOperador($operadorId)
-{
-    $sql = "SELECT 
-                n.id,
-                n.tipo,
-                n.descripcion,
-                n.motivo_anulacion,
-                n.estado,
-                n.fecha_registro,
-                u.nombre_completo AS registrado_por_nombre
-            FROM novedades n
-            LEFT JOIN operadores u ON n.registrado_por = u.id
-            WHERE n.operador_id = :operador_id
-            ORDER BY n.fecha_registro DESC";
-
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute([
-        ':operador_id' => $operadorId
-    ]);
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-public function actualizarClave($id, $clave)
-{
-    $sql = "UPDATE operadores SET clave = :clave WHERE id = :id";
-    $stmt = $this->db->prepare($sql);
-
-    return $stmt->execute([
-        ':clave' => $clave,
-        ':id' => $id
-    ]);
 }
 }
