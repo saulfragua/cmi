@@ -3,17 +3,19 @@
 require_once __DIR__ . '/../../models/Formulario.php';
 require_once __DIR__ . '/../../models/Operador.php';
 
-class IncorporacionesController {
-
+class IncorporacionesController
+{
     private $modelo;
     private $operadorModelo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->modelo = new Formulario();
         $this->operadorModelo = new Operador();
     }
 
-    private function validarSesion() {
+    private function validarSesion()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -24,7 +26,8 @@ class IncorporacionesController {
         }
     }
 
-    public function index() {
+    public function index()
+    {
         $this->validarSesion();
 
         $formularios = $this->modelo->obtenerTodos();
@@ -33,16 +36,20 @@ class IncorporacionesController {
         require ROOT . '/app/views/admin/layouts/main.php';
     }
 
-    public function guardar() {
+    public function guardar()
+    {
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $datos = [
-                'nombre' => $_POST['nombre_completo'],
-                'fecha' => $_POST['fecha_nacimiento'],
-                'pais' => $_POST['pais'],
-                'telefono' => $_POST['telefono']
+                'nombre_completo'  => trim($_POST['nombre_completo'] ?? ''),
+                'fecha_nacimiento' => trim($_POST['fecha_nacimiento'] ?? ''),
+                'pais_id'          => $_POST['pais_id'] ?? null,
+                'telefono'         => trim($_POST['telefono'] ?? ''),
+                'discord'          => trim($_POST['discord'] ?? ''),
+                'indicativo'       => trim($_POST['indicativo'] ?? ''),
+                'motivo'           => trim($_POST['motivo'] ?? '')
             ];
 
             $this->modelo->crear($datos);
@@ -52,7 +59,8 @@ class IncorporacionesController {
         }
     }
 
-    public function actualizarEstado() {
+    public function actualizarEstado()
+    {
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -91,7 +99,7 @@ class IncorporacionesController {
                             'rango_id' => null,
                             'especialidad_id' => null,
                             'unidad_id' => null,
-                            'pais' => $formulario['pais'],
+                            'pais' => $formulario['pais_nombre'] ?? null,
                             'telefono' => $formulario['telefono'],
                             'rol' => 'operador',
                             'fecha_ultimo_ascenso' => null,
@@ -106,7 +114,8 @@ class IncorporacionesController {
         }
     }
 
-    public function eliminar($id) {
+    public function eliminar($id)
+    {
         $this->validarSesion();
 
         $this->modelo->eliminar($id);

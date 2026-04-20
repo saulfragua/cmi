@@ -28,6 +28,11 @@
         <a href="<?= BASE_URL ?>/actividades" class="block px-2 py-1 rounded transition
            <?= $ruta == 'actividades' ? 'text-[#c8982e] bg-[#1a1a1a]' : 'hover:text-[#c8982e]' ?>">
             📅 Actividades
+
+        <A href="<?= BASE_URL ?>/novedades" class="block px-2 py-1 rounded transition
+           <?= $ruta == 'novedades' ? 'text-[#c8982e] bg-[#1a1a1a]' : 'hover:text-[#c8982e]' ?>">
+            📰 Novedades
+
         </a>
 
         <a href="<?= BASE_URL ?>/rangos" class="block px-2 py-1 rounded transition

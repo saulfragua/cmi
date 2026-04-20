@@ -55,6 +55,7 @@
         <div>
             <label class="block mb-2 text-sm text-gray-300">Fecha</label>
             <input type="date" name="fecha" required
+                   value="<?= htmlspecialchars($fechaSeleccionada ?? date('Y-m-d')) ?>"
                    class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white">
         </div>
 

@@ -30,7 +30,7 @@
                 <span class="underline"></span>
             </a>
 
-            <a href="/cmi/public/"
+            <a href="#multimedia"
             data-link
             class="nav-link relative text-sm lg:text-base
                     text-gray-400
@@ -43,7 +43,7 @@
                 <span class="underline"></span>
             </a>
 
-            <a href="/cmi/public/"
+            <a href="#nosotros"
             data-link
             class="nav-link relative text-sm lg:text-base
                     text-gray-400
@@ -71,7 +71,7 @@
 
         <!-- Menú derecho - Desktop -->
         <nav class="hidden md:flex gap-6 lg:gap-9 items-center">
-            <a href="/cmi/public/"
+            <a href="#requisitos"
             data-link
             class="nav-link relative text-sm lg:text-base
                     text-gray-400
@@ -84,8 +84,7 @@
                 <span class="underline"></span>
             </a>
 
-<a href="#" 
-   id="btnIncorporate"
+<a href="<?= BASE_URL ?>/incorporate/formulario" 
    class="nav-link relative text-sm lg:text-base
           text-gray-400
           tracking-widest

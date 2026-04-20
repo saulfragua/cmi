@@ -1,4 +1,4 @@
-<section class="bg-black py-20 relative z-10">
+<section id="multimedia" class="bg-black py-20 relative z-10">
 
     <div class="max-w-[1400px] mx-auto px-6">
 

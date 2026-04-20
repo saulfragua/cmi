@@ -1,68 +1,226 @@
+<?php
+$esFinalizada = $actividad['estado'] === 'Finalizada';
+?>
+
 <div class="p-6 text-white bg-[#05070d] min-h-screen">
 
     <div class="mb-6 border-l-4 border-blue-500 pl-4">
-        <h1 class="text-2xl font-bold tracking-widest text-blue-400">[CMI] DETALLE DE ACTIVIDAD</h1>
-        <p class="text-sm text-gray-400">Control de participación por operador</p>
+        <h1 class="text-2xl font-bold tracking-widest text-blue-400">[CMI] DETALLE Y EDICIÓN DE ACTIVIDAD</h1>
+        <p class="text-sm text-gray-400">
+            <?= $esFinalizada ? 'Consulta de histórico de actividad finalizada' : 'Consulta y actualización de actividad operativa' ?>
+        </p>
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-6 mb-6">
-        <div class="lg:col-span-2 bg-[#0b1220] border border-[#1f2937] rounded-xl p-6">
-            <h2 class="text-xl font-bold text-[#c8982e] mb-4"><?= htmlspecialchars($actividad['nombre']) ?></h2>
+    <?php if ($esFinalizada): ?>
+        <div class="mb-6 border border-blue-800 bg-blue-950/40 text-blue-300 rounded-xl px-4 py-4">
+            <div class="font-bold text-sm tracking-wide">ACTIVIDAD FINALIZADA</div>
+            <div class="text-sm text-blue-200 mt-1">
+                Esta actividad ya fue cerrada. Los datos quedaron guardados en histórico y no pueden ser editados.
+            </div>
+        </div>
+    <?php endif; ?>
 
-            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <span class="text-gray-400">Tipo:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars($actividad['tipo']) ?></span>
+    <form action="<?= BASE_URL ?>/actividades/actualizar" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?= $actividad['id'] ?>">
+
+        <div class="grid lg:grid-cols-3 gap-6 mb-6">
+
+            <div class="lg:col-span-2 bg-[#0b1220] border border-[#1f2937] rounded-xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-[#c8982e]">Datos de la actividad</h2>
+
+                    <?php if (!$esFinalizada): ?>
+                        <a href="<?= BASE_URL ?>/actividades/editar?id=<?= $actividad['id'] ?>"
+                           class="px-4 py-2 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-black text-sm font-bold">
+                            Editar clásica
+                        </a>
+                    <?php else: ?>
+                        <span class="px-4 py-2 rounded-lg bg-gray-800 text-gray-400 text-sm font-bold cursor-not-allowed">
+                            Edición bloqueada
+                        </span>
+                    <?php endif; ?>
                 </div>
-                <div>
-                    <span class="text-gray-400">Estado:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars($actividad['estado']) ?></span>
+
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Nombre</label>
+                        <input type="text"
+                               name="nombre"
+                               value="<?= htmlspecialchars($actividad['nombre']) ?>"
+                               required
+                               <?= $esFinalizada ? 'disabled' : '' ?>
+                               class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Tipo</label>
+                        <select name="tipo"
+                                required
+                                <?= $esFinalizada ? 'disabled' : '' ?>
+                                class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                            <option value="curso" <?= $actividad['tipo'] === 'curso' ? 'selected' : '' ?>>Curso</option>
+                            <option value="entrenamiento" <?= $actividad['tipo'] === 'entrenamiento' ? 'selected' : '' ?>>Entrenamiento</option>
+                            <option value="mision" <?= $actividad['tipo'] === 'mision' ? 'selected' : '' ?>>Misión</option>
+                            <option value="operacion" <?= $actividad['tipo'] === 'operacion' ? 'selected' : '' ?>>Operación</option>
+                            <option value="ejercicio" <?= $actividad['tipo'] === 'ejercicio' ? 'selected' : '' ?>>Ejercicio</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Estado</label>
+                        <select name="estado"
+                                required
+                                <?= $esFinalizada ? 'disabled' : '' ?>
+                                class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                            <option value="Borrador" <?= $actividad['estado'] === 'Borrador' ? 'selected' : '' ?>>Borrador</option>
+                            <option value="Publicada" <?= $actividad['estado'] === 'Publicada' ? 'selected' : '' ?>>Publicada</option>
+                            <option value="Finalizada" <?= $actividad['estado'] === 'Finalizada' ? 'selected' : '' ?>>Finalizada</option>
+                            <option value="Cancelada" <?= $actividad['estado'] === 'Cancelada' ? 'selected' : '' ?>>Cancelada</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Fecha</label>
+                        <input type="date"
+                               name="fecha"
+                               value="<?= htmlspecialchars($actividad['fecha']) ?>"
+                               required
+                               <?= $esFinalizada ? 'disabled' : '' ?>
+                               class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Hora inicio</label>
+                        <input type="time"
+                               name="hora_inicio"
+                               value="<?= htmlspecialchars(substr($actividad['hora_inicio'], 0, 5)) ?>"
+                               required
+                               <?= $esFinalizada ? 'disabled' : '' ?>
+                               class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-gray-400">Operador responsable</label>
+                        <select name="operador_id"
+                                required
+                                <?= $esFinalizada ? 'disabled' : '' ?>
+                                class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                            <?php foreach ($operadores as $o): ?>
+                                <option value="<?= $o['id'] ?>" <?= (int)$actividad['operador_id'] === (int)$o['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($o['nombre_completo']) ?> - <?= htmlspecialchars($o['estado']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-gray-400">Descripción</label>
+                        <textarea name="descripcion"
+                                  rows="5"
+                                  <?= $esFinalizada ? 'disabled' : '' ?>
+                                  class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>"><?= htmlspecialchars($actividad['descripcion']) ?></textarea>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-gray-400">Cambiar imagen</label>
+                        <input type="file"
+                               name="imagen"
+                               accept="image/*"
+                               <?= $esFinalizada ? 'disabled' : '' ?>
+                               class="w-full bg-[#111827] border border-[#374151] rounded-lg px-4 py-3 text-white <?= $esFinalizada ? 'opacity-60 cursor-not-allowed' : '' ?>">
+                        <p class="text-xs text-gray-500 mt-2">
+                            <?= $esFinalizada ? 'La actividad está finalizada, no se puede cambiar la imagen.' : 'Si no seleccionas una imagen nueva, se conserva la actual.' ?>
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-gray-400">Fecha:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars($actividad['fecha']) ?></span>
-                </div>
-                <div>
-                    <span class="text-gray-400">Hora inicio:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars(substr($actividad['hora_inicio'], 0, 5)) ?></span>
-                </div>
-                <div>
-                    <span class="text-gray-400">Operador responsable:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars($actividad['operador_nombre']) ?></span>
-                </div>
-                <div>
-                    <span class="text-gray-400">Registrado por:</span>
-                    <span class="text-white font-semibold"><?= htmlspecialchars($actividad['usuario_registra'] ?? 'N/A') ?></span>
+
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <?php if (!$esFinalizada): ?>
+                        <button type="submit"
+                                class="px-6 py-3 rounded-lg bg-[#c8982e] text-black font-bold hover:opacity-90">
+                            Guardar cambios
+                        </button>
+                    <?php else: ?>
+                        <div class="px-6 py-3 rounded-lg bg-gray-800 text-gray-400 font-bold cursor-not-allowed">
+                            Actividad finalizada
+                        </div>
+                    <?php endif; ?>
+
+                    <a href="<?= BASE_URL ?>/actividades"
+                       class="px-6 py-3 rounded-lg bg-gray-700 text-white font-bold hover:bg-gray-600">
+                        Volver
+                    </a>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <span class="text-gray-400 text-sm">Descripción:</span>
-                <div class="mt-2 text-gray-200 leading-relaxed">
-                    <?= nl2br(htmlspecialchars($actividad['descripcion'])) ?>
+            <div class="bg-[#0b1220] border border-[#1f2937] rounded-xl p-6">
+                <h3 class="text-lg font-bold text-[#c8982e] mb-4">Imagen actual</h3>
+
+                <?php if (!empty($actividad['imagen'])): ?>
+                    <img src="<?= BASE_URL . '/' . $actividad['imagen'] ?>"
+                         alt="Imagen actividad"
+                         class="w-full h-56 object-cover rounded-lg border border-[#374151] mb-4">
+                <?php else: ?>
+                    <div class="w-full h-56 flex items-center justify-center rounded-lg border border-dashed border-[#374151] text-gray-500 mb-4">
+                        Sin imagen
+                    </div>
+                <?php endif; ?>
+
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <span class="text-gray-400">Registrado por:</span>
+                        <span class="text-white font-semibold"><?= htmlspecialchars($actividad['usuario_registra'] ?? 'N/A') ?></span>
+                    </div>
+
+                    <div>
+                        <span class="text-gray-400">Actividad ID:</span>
+                        <span class="text-white font-semibold">#<?= htmlspecialchars($actividad['id']) ?></span>
+                    </div>
+
+                    <?php if ($esFinalizada): ?>
+                        <div>
+                            <span class="text-gray-400">Fecha cierre:</span>
+                            <span class="text-white font-semibold">
+                                <?= !empty($actividad['fecha_cierre']) ? htmlspecialchars($actividad['fecha_cierre']) : 'N/A' ?>
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-400">Convocados:</span>
+                            <span class="text-white font-semibold"><?= (int)($actividad['total_convocados'] ?? 0) ?></span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-400">Asistieron:</span>
+                            <span class="text-green-400 font-semibold"><?= (int)($actividad['total_asistieron'] ?? 0) ?></span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-400">No asistieron:</span>
+                            <span class="text-red-400 font-semibold"><?= (int)($actividad['total_no_asistieron'] ?? 0) ?></span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-400">Pendientes al cierre:</span>
+                            <span class="text-yellow-400 font-semibold"><?= (int)($actividad['total_pendientes_cierre'] ?? 0) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
-
-        <div class="bg-[#0b1220] border border-[#1f2937] rounded-xl p-6">
-            <h3 class="text-lg font-bold text-[#c8982e] mb-4">Imagen</h3>
-
-            <?php if (!empty($actividad['imagen'])): ?>
-                <img src="<?= BASE_URL . '/' . $actividad['imagen'] ?>"
-                     alt="Imagen actividad"
-                     class="w-full h-56 object-cover rounded-lg border border-[#374151]">
-            <?php else: ?>
-                <div class="w-full h-56 flex items-center justify-center rounded-lg border border-dashed border-[#374151] text-gray-500">
-                    Sin imagen
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
+    </form>
 
     <div class="bg-[#0b1220] border border-[#1f2937] rounded-xl shadow-lg overflow-x-auto">
         <div class="px-6 py-4 border-b border-[#1f2937]">
-            <h3 class="text-lg font-bold text-[#c8982e]">Listado de operadores</h3>
-            <p class="text-sm text-gray-400">Solo se cargan operadores en estado Activo y Reserva</p>
+            <h3 class="text-lg font-bold text-[#c8982e]">
+                <?= $esFinalizada ? 'Histórico de operadores participantes' : 'Listado de operadores' ?>
+            </h3>
+            <p class="text-sm text-gray-400">
+                <?= $esFinalizada
+                    ? 'Registro histórico congelado al momento del cierre de la actividad'
+                    : 'Solo se cargan operadores en estado Activo y Reserva' ?>
+            </p>
         </div>
 
         <table class="w-full text-sm">
@@ -81,81 +239,92 @@
             <tbody>
                 <?php if (!empty($participantes)): ?>
                     <?php foreach ($participantes as $p): ?>
+                        <?php
+                        $codigoMostrar = $p['codigo'] ?? $p['codigo_operador'] ?? '---';
+                        $nombreMostrar = $p['nombre_completo'] ?? '---';
+                        $telefonoMostrar = $p['telefono'] ?? '---';
+                        $estadoOperadorMostrar = $p['estado_operador'] ?? '---';
+                        $estadoParticipacionMostrar = $p['estado_participacion'] ?? $p['estado'] ?? 'Pendiente';
+                        $fechaRespuestaMostrar = $p['fecha_respuesta'] ?? null;
+                        $observacionMostrar = $p['observacion'] ?? '';
+                        ?>
                         <tr class="border-t border-[#1f2937] hover:bg-[#0f172a] transition">
-                            <td class="px-4 py-3"><?= htmlspecialchars($p['codigo']) ?></td>
-                            <td class="px-4 py-3 font-semibold"><?= htmlspecialchars($p['nombre_completo']) ?></td>
-                            <td class="px-4 py-3"><?= htmlspecialchars($p['telefono']) ?></td>
+                            <td class="px-4 py-3"><?= htmlspecialchars($codigoMostrar) ?></td>
+                            <td class="px-4 py-3 font-semibold"><?= htmlspecialchars($nombreMostrar) ?></td>
+                            <td class="px-4 py-3"><?= htmlspecialchars($telefonoMostrar) ?></td>
+
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-full text-xs font-bold
-                                    <?= $p['estado_operador'] === 'Activo' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300' ?>">
-                                    <?= htmlspecialchars($p['estado_operador']) ?>
+                                    <?= $estadoOperadorMostrar === 'Activo' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300' ?>">
+                                    <?= htmlspecialchars($estadoOperadorMostrar) ?>
                                 </span>
                             </td>
 
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-full text-xs font-bold
                                     <?php
-                                        switch ($p['estado_participacion']) {
+                                        switch ($estadoParticipacionMostrar) {
                                             case 'Asiste': echo 'bg-green-900 text-green-300'; break;
                                             case 'No asiste': echo 'bg-red-900 text-red-300'; break;
                                             default: echo 'bg-yellow-900 text-yellow-300'; break;
                                         }
                                     ?>">
-                                    <?= htmlspecialchars($p['estado_participacion']) ?>
+                                    <?= htmlspecialchars($estadoParticipacionMostrar) ?>
                                 </span>
                             </td>
 
                             <td class="px-4 py-3 text-xs text-gray-300">
-                                <?= !empty($p['fecha_respuesta']) ? htmlspecialchars($p['fecha_respuesta']) : 'Sin respuesta' ?>
+                                <?= !empty($fechaRespuestaMostrar) ? htmlspecialchars($fechaRespuestaMostrar) : 'Sin respuesta' ?>
                             </td>
 
                             <td class="px-4 py-3 text-xs text-gray-300">
-                                <?= !empty($p['observacion']) ? htmlspecialchars($p['observacion']) : '---' ?>
+                                <?= !empty($observacionMostrar) ? htmlspecialchars($observacionMostrar) : '---' ?>
                             </td>
 
                             <td class="px-4 py-3">
-<form action="<?= BASE_URL ?>/actividades/cambiar-estado-participacion"
-      method="POST"
-      class="flex flex-col gap-2 min-w-[180px]">
-    <input type="hidden" name="actividad_id" value="<?= $actividad['id'] ?>">
-    <input type="hidden" name="operador_id" value="<?= $p['operador_id'] ?>">
+                                <?php if (!$esFinalizada): ?>
+                                    <form action="<?= BASE_URL ?>/actividades/cambiar-estado-participacion"
+                                          method="POST"
+                                          class="flex flex-col gap-2 min-w-[180px]">
+                                        <input type="hidden" name="actividad_id" value="<?= $actividad['id'] ?>">
+                                        <input type="hidden" name="operador_id" value="<?= $p['operador_id'] ?>">
 
-    <select name="estado"
-            class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
-        <option value="Pendiente" <?= $p['estado_participacion'] === 'Pendiente' ? 'selected' : '' ?>>Pendiente</option>
-        <option value="Asiste" <?= $p['estado_participacion'] === 'Asiste' ? 'selected' : '' ?>>Asiste</option>
-        <option value="No asiste" <?= $p['estado_participacion'] === 'No asiste' ? 'selected' : '' ?>>No asiste</option>
-    </select>
+                                        <select name="estado"
+                                                class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
+                                            <option value="Pendiente" <?= $estadoParticipacionMostrar === 'Pendiente' ? 'selected' : '' ?>>Pendiente</option>
+                                            <option value="Asiste" <?= $estadoParticipacionMostrar === 'Asiste' ? 'selected' : '' ?>>Asiste</option>
+                                            <option value="No asiste" <?= $estadoParticipacionMostrar === 'No asiste' ? 'selected' : '' ?>>No asiste</option>
+                                        </select>
 
-    <input type="text"
-           name="observacion"
-           value="<?= htmlspecialchars($p['observacion'] ?? '') ?>"
-           placeholder="Observación"
-           class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
+                                        <input type="text"
+                                               name="observacion"
+                                               value="<?= htmlspecialchars($observacionMostrar) ?>"
+                                               placeholder="Observación"
+                                               class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
 
-    <button type="submit"
-            class="px-3 py-2 rounded bg-[#c8982e] text-black text-xs font-bold hover:opacity-90">
-        Guardar
-    </button>
-</form>
+                                        <button type="submit"
+                                                class="px-3 py-2 rounded bg-[#c8982e] text-black text-xs font-bold hover:opacity-90">
+                                            Guardar
+                                        </button>
+                                    </form>
+                                <?php else: ?>
+                                    <div class="min-w-[180px] text-center px-3 py-3 rounded bg-gray-800 text-gray-400 text-xs font-bold cursor-not-allowed">
+                                        Histórico
+                                    </div>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
                         <td colspan="8" class="px-4 py-8 text-center text-gray-400">
-                            No hay operadores relacionados para esta actividad.
+                            <?= $esFinalizada
+                                ? 'No hay histórico de operadores guardado para esta actividad.'
+                                : 'No hay operadores relacionados para esta actividad.' ?>
                         </td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
-    </div>
-
-    <div class="mt-6">
-        <a href="<?= BASE_URL ?>/actividades"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-700 text-white font-bold hover:bg-gray-600">
-            ← Volver
-        </a>
     </div>
 </div>

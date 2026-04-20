@@ -59,7 +59,7 @@
 
                     <!-- TÍTULO -->
                     <h4 class="text-xl font-bold text-[#c8982e] mb-4">
-                        Ediciones
+                        Ediciones de Arma 3
                     </h4>
 
                     <!-- IMAGEN CLICKEABLE -->
@@ -179,7 +179,7 @@
             <div class="bg-black/50 border border-[#222] rounded-md p-6 text-gray-300">
 
                 <h4 class="text-lg font-bold tracking-widest text-[#c8982e] mb-6 text-center">
-                    🌎 HORARIO DE OPERACIONES (Zona horaria de Colombia (GMT-5))
+                    🌎 HORARIO DE OPERACIONES (Colombia GMT-5)
                 </h4>
 
                 <p id="fechaHora" class="text-center text-green-400 text-sm mb-4 glow-text tracking-widest"></p>
@@ -189,14 +189,14 @@
                     class="relative w-full h-[400px] md:h-[500px] overflow-hidden rounded-lg border border-[#222] bg-black">
 
                     <!-- MAPA -->
-                    <img src="<?= BASE_URL ?>/assets/img/nacionalidad/mapa.png" alt="Mapa Táctico"
-                        class="w-full h-full object-contain opacity-50  pointer-events-none mapa-tactico">
+                    <img src="/public/assets/img/nacionalidad/mapa.png"
+                        class="w-full h-full object-contain opacity-40 pointer-events-none mapa-tactico scale-110">
 
                     <!-- CAPA -->
-                    <div class="absolute inset-0 via-transparent to-black"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"></div>
 
                     <!-- ================= COLOMBIA ================= -->
-                    <div class="absolute top-[25%] left-[48%] flex flex-col items-center">
+                    <div class="absolute top-[58%] left-[20%] flex flex-col items-center">
                         <div class="mt-2 text-center">
                             <img src="https://flagcdn.com/w20/co.png" class="w-5 mx-auto mb-1">
                             <p class="text-[9px] text-green-400 font-bold glow-text">COLOMBIA</p>
@@ -205,83 +205,68 @@
                     </div>
 
                     <!-- ECUADOR -->
-                    <div class="absolute top-[34%] left-[46%] text-center">
+                    <div class="absolute top-[64%] left-[16%] text-center">
                         <img src="https://flagcdn.com/w20/ec.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">ECUADOR</p>
                         <p class="text-[9px] text-[#c8982e]">19:30</p>
                     </div>
 
                     <!-- PERÚ -->
-                    <div class="absolute top-[41%] left-[48%] text-center">
+                    <div class="absolute top-[69%] left-[21%] text-center">
                         <img src="https://flagcdn.com/w20/pe.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">PERÚ</p>
                         <p class="text-[9px] text-[#c8982e]">19:30</p>
                     </div>
 
                     <!-- PANAMÁ -->
-                    <div class="absolute top-[20%] left-[46%] text-center">
+                    <div class="absolute top-[56%] left-[16%] text-center">
                         <img src="https://flagcdn.com/w20/pa.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">PANAMÁ</p>
                         <p class="text-[9px] text-[#c8982e]">19:30</p>
                     </div>
 
                     <!-- MÉXICO -->
-                    <div class="absolute top-[10%] left-[35%] text-center">
+                    <div class="absolute top-[50%] left-[11%] text-center">
                         <img src="https://flagcdn.com/w20/mx.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">MÉXICO</p>
                         <p class="text-[9px] text-[#c8982e]">18:30</p>
                     </div>
 
                     <!-- VENEZUELA -->
-                    <div class="absolute top-[24%] left-[55%] text-center">
+                    <div class="absolute top-[54%] left-[23%] text-center">
                         <img src="https://flagcdn.com/w20/ve.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">VENEZUELA</p>
                         <p class="text-[9px] text-[#c8982e]">20:30</p>
                     </div>
 
                     <!-- BOLIVIA -->
-                    <div class="absolute top-[50%] left-[55%] text-center">
+                    <div class="absolute top-[72%] left-[24%] text-center">
                         <img src="https://flagcdn.com/w20/bo.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">BOLIVIA</p>
                         <p class="text-[9px] text-[#c8982e]">20:30</p>
                     </div>
 
                     <!-- ARGENTINA -->
-                    <div class="absolute top-[70%] left-[55%] text-center">
+                    <div class="absolute top-[82%] left-[25%] text-center">
                         <img src="https://flagcdn.com/w20/ar.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">ARGENTINA</p>
                         <p class="text-[9px] text-[#c8982e]">21:30</p>
                     </div>
 
                     <!-- CHILE -->
-                    <div class="absolute top-[60%] left-[50%] text-center">
+                    <div class="absolute top-[79%] left-[22%] text-center">
                         <img src="https://flagcdn.com/w20/cl.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">CHILE</p>
                         <p class="text-[9px] text-[#c8982e]">21:30</p>
                     </div>
 
                     <!-- ESPAÑA -->
-                    <div class="absolute top-[40%] left-[90%] text-center">
+                    <div class="absolute top-[40%] left-[44%] text-center">
                         <img src="https://flagcdn.com/w20/es.png" class="w-4 mx-auto mb-1">
                         <p class="text-[9px] text-gray-300">ESPAÑA</p>
                         <p class="text-[9px] text-[#c8982e]">02:00</p>
                     </div>
                 </div>
-                
-<div class="mt-6 bg-black/60 border border-[#2a2a2a] rounded-lg p-6">
-<div class="text-center mb-4">
-
-    <p id="fechaActual"
-       class="text-green-400 text-sm tracking-widest font-semibold">
-    </p>
-
-</div>
-
-    <div id="horasLatam" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-xs text-gray-300">
-        <!-- JS -->
-    </div>
-
-</div>
 
                 <div class="mt-10 grid md:grid-cols-2 gap-6">
 
@@ -374,120 +359,36 @@
                         </div>
                     </div>
 
-                        <div class="mt-6 flex flex-col items-center justify-center text-center gap-4 md:col-span-2 max-w-md mx-auto">
-                        
-                            <!-- ALERTA -->
-                            <div class="px-6 py-2 border border-red-600 text-red-500 text-xs tracking-widest
-                                        animate-pulse shadow-[0_0_10px_rgba(255,0,0,0.6)] text-center">
-                        
-                                💥 ALERTA DE RECLUTAMIENTO ACTIVO
-                        
-                            </div>
-                        
-                            <!-- BOTÓN -->
-                            <a href="<?= BASE_URL ?>/incorporate/formulario"
-                               class="inline-block px-8 py-3
-                                      bg-black
-                                      text-[#c8982e]
-                                      font-extrabold tracking-widest text-sm lg:text-base
-                                      border-2 border-[#c8982e]
-                                      rounded
-                                      transition-all duration-300
-                                      text-center
-                                      hover:bg-[#c8982e]
-                                      hover:text-black
-                                      hover:shadow-[0_0_20px_rgba(200,152,46,0.9)]">
-                        
-                                INCORPÓRATE YA
-                        
-                            </a>
-                        
+                    <!-- CONTENEDOR -->
+                    <div class="mt-6 flex flex-col items-center gap-4">
+
+                        <!-- ALERTA -->
+                        <div class="px-6 py-2 border border-red-600 text-red-500 text-xs tracking-widest
+                animate-pulse shadow-[0_0_10px_rgba(255,0,0,0.6)]">
+
+                            💥 ALERTA DE RECLUTAMIENTO ACTIVO
+
                         </div>
+
+                        <!-- BOTÓN -->
+                        <a href="#incorporacion" id="btnIncorporate" class="relative inline-block px-8 py-3
+                bg-black
+                text-[#c8982e]
+                font-extrabold tracking-widest text-sm lg:text-base
+                border-2 border-[#c8982e]
+                rounded
+                transition-all duration-300
+                hover:bg-[#c8982e]
+                hover:text-black
+                hover:shadow-[0_0_20px_rgba(200,152,46,0.9)]">
+
+                            INCORPÓRATE YA
+
+                        </a>
+
+                    </div>
 
                 </div>
 
             </div>
 </section>
-
-<script>
-function actualizarHoras() {
-
-    const paises = [
-        { nombre: "Colombia", bandera: "co", offset: 0 },
-        { nombre: "Perú", bandera: "pe", offset: 0 },
-        { nombre: "Ecuador", bandera: "ec", offset: 0 },
-        { nombre: "Panamá", bandera: "pa", offset: 0 },
-
-        { nombre: "Venezuela", bandera: "ve", offset: 1 },
-        { nombre: "Bolivia", bandera: "bo", offset: 1 },
-        { nombre: "R. Dominicana", bandera: "do", offset: 1 },
-        { nombre: "Puerto Rico", bandera: "pr", offset: 1 },
-
-        { nombre: "Argentina", bandera: "ar", offset: 2 },
-        { nombre: "Chile", bandera: "cl", offset: 2 },
-        { nombre: "Uruguay", bandera: "uy", offset: 2 },
-        { nombre: "Paraguay", bandera: "py", offset: 2 },
-
-        { nombre: "México", bandera: "mx", offset: -1 },
-        { nombre: "Guatemala", bandera: "gt", offset: -1 },
-        { nombre: "Honduras", bandera: "hn", offset: -1 },
-        { nombre: "El Salvador", bandera: "sv", offset: -1 },
-        { nombre: "Nicaragua", bandera: "ni", offset: -1 },
-        { nombre: "Costa Rica", bandera: "cr", offset: -1 }
-    ];
-
-    const ahora = new Date();
-
-    // Hora base Colombia
-    const colombia = new Date(ahora.toLocaleString("en-US", {
-        timeZone: "America/Bogota"
-    }));
-
-    // ================= FECHA =================
-    const dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
-    const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
-                   "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-
-    const diaSemana = dias[colombia.getDay()];
-    const dia = colombia.getDate();
-    const mes = meses[colombia.getMonth()];
-    const anio = colombia.getFullYear();
-
-    document.getElementById("fechaActual").innerHTML =
-        `📅 ${diaSemana}, ${dia} de ${mes} de ${anio}`;
-
-    // ================= HORAS =================
-    const contenedor = document.getElementById("horasLatam");
-    contenedor.innerHTML = "";
-
-    paises.forEach(pais => {
-
-        let hora = new Date(colombia);
-        hora.setHours(hora.getHours() + pais.offset);
-
-        let h = hora.getHours().toString().padStart(2, '0');
-        let m = hora.getMinutes().toString().padStart(2, '0');
-        let s = hora.getSeconds().toString().padStart(2, '0');
-
-        contenedor.innerHTML += `
-            <div class="bg-[#111] border border-[#333] rounded p-3
-                        shadow-sm hover:shadow-[0_0_10px_#c8982e] transition">
-
-                <img src="https://flagcdn.com/w40/${pais.bandera}.png"
-                     class="mx-auto mb-1">
-
-                <p class="text-[#c8982e] text-[11px]">${pais.nombre}</p>
-
-                <p class="text-green-400 font-bold tracking-widest">
-                    ${h}:${m}:${s}
-                </p>
-
-            </div>
-        `;
-    });
-}
-
-// Ejecutar cada segundo
-setInterval(actualizarHoras, 1000);
-actualizarHoras();
-</script>

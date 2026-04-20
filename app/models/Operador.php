@@ -563,4 +563,102 @@ public function filtrar($filtros = [])
             'Retirado'
         ];
     }
+
+
+
+public function actualizarFoto($id, $foto)
+{
+    $sql = "UPDATE operadores
+            SET foto_operador = :foto,
+                fecha_modificacion = CURRENT_TIMESTAMP
+            WHERE id = :id";
+
+    $stmt = $this->db->prepare($sql);
+
+    return $stmt->execute([
+        ':foto' => $foto,
+        ':id'   => $id
+    ]);
+}
+public function actualizarPerfilOperador($id, $datos)
+{
+    $sql = "UPDATE operadores
+            SET nombre_completo = :nombre_completo,
+                fecha_nacimiento = :fecha_nacimiento,
+                telefono = :telefono,
+                pais = :pais,
+                fecha_modificacion = CURRENT_TIMESTAMP
+            WHERE id = :id";
+
+    $stmt = $this->db->prepare($sql);
+
+    return $stmt->execute([
+        ':nombre_completo'  => $datos['nombre_completo'],
+        ':fecha_nacimiento' => $datos['fecha_nacimiento'],
+        ':telefono'         => $datos['telefono'],
+        ':pais'             => $datos['pais'],
+        ':id'               => $id
+    ]);
+}
+
+public function obtenerHistorialActividades($operadorId)
+{
+    $sql = "SELECT 
+                a.id,
+                a.nombre,
+                a.tipo,
+                a.fecha,
+                a.hora_inicio,
+                a.estado AS estado_actividad,
+                ao.estado AS estado_participacion,
+                ao.fecha_respuesta,
+                ao.observacion
+            FROM actividad_operador ao
+            INNER JOIN actividades a ON a.id = ao.actividad_id
+            WHERE ao.operador_id = :operador_id
+              AND ao.estado = 'Asiste'
+            ORDER BY a.fecha DESC, a.hora_inicio DESC
+            LIMIT 5";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([
+        ':operador_id' => $operadorId
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function obtenerNovedadesPorOperador($operadorId)
+{
+    $sql = "SELECT 
+                n.id,
+                n.tipo,
+                n.descripcion,
+                n.motivo_anulacion,
+                n.estado,
+                n.fecha_registro,
+                u.nombre_completo AS registrado_por_nombre
+            FROM novedades n
+            LEFT JOIN operadores u ON n.registrado_por = u.id
+            WHERE n.operador_id = :operador_id
+            ORDER BY n.fecha_registro DESC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([
+        ':operador_id' => $operadorId
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function actualizarClave($id, $clave)
+{
+    $sql = "UPDATE operadores SET clave = :clave WHERE id = :id";
+    $stmt = $this->db->prepare($sql);
+
+    return $stmt->execute([
+        ':clave' => $clave,
+        ':id' => $id
+    ]);
+}
 }

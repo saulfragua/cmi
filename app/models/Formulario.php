@@ -9,51 +9,61 @@ class Formulario
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function crear($datos)
+    public function crear($data)
     {
-        $sql = "INSERT INTO formulario 
-                (nombre_completo, fecha_nacimiento, pais, telefono, estado_id, motivo)
-                VALUES (:nombre, :fecha, :pais, :telefono, 1, :motivo)";
+        $sql = "INSERT INTO formulario
+                (nombre_completo, fecha_nacimiento, pais_id, telefono, indicativo, discord, estado_id, motivo)
+                VALUES
+                (:nombre_completo, :fecha_nacimiento, :pais_id, :telefono, :indicativo, :discord, :estado_id, :motivo)";
 
         $stmt = $this->db->prepare($sql);
 
         return $stmt->execute([
-            ':nombre' => $datos['nombre'],
-            ':fecha' => $datos['fecha'],
-            ':pais' => $datos['pais'],
-            ':telefono' => $datos['telefono'],
-            ':motivo' => $datos['motivo'] ?? null
+            ':nombre_completo'   => $data['nombre_completo'],
+            ':fecha_nacimiento'  => $data['fecha_nacimiento'],
+            ':pais_id'           => $data['pais_id'],
+            ':telefono'          => $data['telefono'],
+            ':indicativo'        => $data['indicativo'],
+            ':discord'           => $data['discord'],
+            ':estado_id'         => 1,
+            ':motivo'            => $data['motivo']
         ]);
     }
 
-    public function obtenerTodos()
-    {
-        $sql = "SELECT f.*, e.nombre AS estado
-                FROM formulario f
-                INNER JOIN estados_formulario e ON f.estado_id = e.id
-                ORDER BY f.id DESC";
+public function obtenerTodos()
+{
+    $sql = "SELECT 
+                f.*,
+                p.nombre AS pais_nombre,
+                p.bandera AS pais_bandera,
+                p.indicativo AS pais_indicativo
+            FROM formulario f
+            LEFT JOIN paises p ON p.id = f.pais_id
+            ORDER BY f.fecha_registro DESC";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
 
-        return $stmt->fetchAll();
-    }
+    return $stmt->fetchAll();
+}
 
-    public function obtenerPorId($id)
-    {
-        $sql = "SELECT f.*, e.nombre AS estado
-                FROM formulario f
-                INNER JOIN estados_formulario e ON f.estado_id = e.id
-                WHERE f.id = :id
-                LIMIT 1";
+public function obtenerPorId($id)
+{
+    $sql = "SELECT 
+                f.*,
+                p.nombre AS pais_nombre,
+                p.bandera AS pais_bandera,
+                p.indicativo AS pais_indicativo
+            FROM formulario f
+            LEFT JOIN paises p ON p.id = f.pais_id
+            WHERE f.id = :id
+            LIMIT 1";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':id' => $id
-        ]);
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([':id' => $id]);
 
-        return $stmt->fetch();
-    }
+    return $stmt->fetch();
+}
 
     public function cambiarEstado($id, $estado, $observaciones, $evaluador)
     {

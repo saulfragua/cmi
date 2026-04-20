@@ -252,4 +252,6 @@ $cursos = $_POST['cursos'] ?? [];
     $contenido = ROOT . '/app/views/admin/operadores/ver.php';
     require ROOT . '/app/views/admin/layouts/main.php';
 }
+
+
 }

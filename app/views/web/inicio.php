@@ -89,8 +89,7 @@ function updateCarousel() {
     carousel.style.transform = `translateX(-${index * 100}vw)`;
     dots.forEach(d => d.classList.remove('active'));
     dots[index].classList.add('active');
-    sound.currentTime = 0;
-    sound.play();
+
 }
 
 function nextSlide() {

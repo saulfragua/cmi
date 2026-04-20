@@ -218,7 +218,7 @@ public function crear($data)
         ]);
     }
 
-    public function guardarResumenHistorico($actividad_id)
+public function guardarResumenHistorico($actividad_id)
 {
     $sql = "UPDATE actividades a
             SET 
@@ -256,7 +256,6 @@ public function crear($data)
 
 public function guardarParticipantesHistoricos($actividad_id)
 {
-    // Evita duplicar históricos si ya se cerró antes
     $sqlVerificar = "SELECT COUNT(*) AS total
                      FROM actividad_operador_historico
                      WHERE actividad_id = :actividad_id";
@@ -310,7 +309,91 @@ public function obtenerParticipacionHistorica($actividad_id)
             ORDER BY nombre_completo ASC";
 
     $stmt = $this->db->prepare($sql);
-    $stmt->execute([':actividad_id' => $actividad_id]);
-    return $stmt->fetchAll();
+    $stmt->execute([
+        ':actividad_id' => $actividad_id
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function obtenerPorMesAnio($mes, $anio)
+{
+    $sql = "SELECT 
+                a.*,
+                o.nombre_completo AS operador_nombre,
+                a.registrado_por AS usuario_registra,
+                (
+                    SELECT COUNT(*) 
+                    FROM actividad_operador ao 
+                    WHERE ao.actividad_id = a.id
+                ) AS total_operadores,
+                (
+                    SELECT COUNT(*) 
+                    FROM actividad_operador ao 
+                    WHERE ao.actividad_id = a.id 
+                      AND ao.estado = 'Asiste'
+                ) AS total_asisten,
+                (
+                    SELECT COUNT(*) 
+                    FROM actividad_operador ao 
+                    WHERE ao.actividad_id = a.id 
+                      AND ao.estado = 'No asiste'
+                ) AS total_no_asisten,
+                (
+                    SELECT COUNT(*) 
+                    FROM actividad_operador ao 
+                    WHERE ao.actividad_id = a.id 
+                      AND ao.estado = 'Pendiente'
+                ) AS total_pendientes
+            FROM actividades a
+            LEFT JOIN operadores o ON a.operador_id = o.id
+            WHERE MONTH(a.fecha) = :mes
+              AND YEAR(a.fecha) = :anio
+            ORDER BY a.fecha ASC, a.hora_inicio ASC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':mes', (int)$mes, PDO::PARAM_INT);
+    $stmt->bindValue(':anio', (int)$anio, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function cambiarEstadoParticipacion()
+{
+    $this->validarSesion();
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: ' . BASE_URL . '/actividades');
+        exit;
+    }
+
+    $actividad_id = (int) ($_POST['actividad_id'] ?? 0);
+    $operador_id  = (int) ($_POST['operador_id'] ?? 0);
+    $estado       = trim($_POST['estado'] ?? 'Pendiente');
+    $observacion  = trim($_POST['observacion'] ?? '');
+
+    $actividad = $this->actividadModel->obtenerPorId($actividad_id);
+
+    if (!$actividad) {
+        header('Location: ' . BASE_URL . '/actividades');
+        exit;
+    }
+
+    if ($actividad['estado'] === 'Finalizada') {
+        header('Location: ' . BASE_URL . '/actividades/ver?id=' . $actividad_id);
+        exit;
+    }
+
+    if ($actividad_id > 0 && $operador_id > 0) {
+        $this->actividadModel->actualizarEstadoParticipacion(
+            $actividad_id,
+            $operador_id,
+            $estado,
+            $observacion !== '' ? $observacion : null
+        );
+    }
+
+    header('Location: ' . BASE_URL . '/actividades/ver?id=' . $actividad_id);
+    exit;
 }
 }

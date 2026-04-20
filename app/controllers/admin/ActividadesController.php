@@ -30,9 +30,23 @@ class ActividadesController
     {
         $this->validarSesion();
 
-        $usuario = $_SESSION['user'];
-        $actividades = $this->actividadModel->obtenerTodas();
+        $mesActual  = date('n');
+        $anioActual = date('Y');
 
+        $mes = isset($_GET['mes']) ? (int) $_GET['mes'] : $mesActual;
+        $anio = isset($_GET['anio']) ? (int) $_GET['anio'] : $anioActual;
+
+        if ($mes < 1 || $mes > 12) {
+            $mes = $mesActual;
+        }
+
+        if ($anio < 2026) {
+            $anio = 2026;
+        }
+
+        $actividades = $this->actividadModel->obtenerPorMesAnio($mes, $anio);
+
+        $usuario = $_SESSION['user'];
         $contenido = ROOT . '/app/views/admin/actividades/index.php';
         require ROOT . '/app/views/admin/layouts/main.php';
     }
@@ -43,6 +57,7 @@ class ActividadesController
 
         $usuario = $_SESSION['user'];
         $operadores = $this->actividadModel->obtenerOperadoresActivosReserva();
+        $fechaSeleccionada = $_GET['fecha'] ?? date('Y-m-d');
 
         $contenido = ROOT . '/app/views/admin/actividades/crear.php';
         require ROOT . '/app/views/admin/layouts/main.php';
@@ -116,6 +131,11 @@ class ActividadesController
             exit;
         }
 
+        if ($actividad['estado'] === 'Finalizada') {
+            header('Location: ' . BASE_URL . '/actividades/ver?id=' . $id);
+            exit;
+        }
+
         $contenido = ROOT . '/app/views/admin/actividades/editar.php';
         require ROOT . '/app/views/admin/layouts/main.php';
     }
@@ -140,6 +160,11 @@ class ActividadesController
 
         if (!$actividadActual) {
             header('Location: ' . BASE_URL . '/actividades');
+            exit;
+        }
+
+        if ($actividadActual['estado'] === 'Finalizada') {
+            header('Location: ' . BASE_URL . '/actividades/ver?id=' . $id);
             exit;
         }
 
@@ -171,13 +196,14 @@ class ActividadesController
             'estado'      => trim($_POST['estado'] ?? 'Borrador')
         ];
 
-        $this->actividadModel->actualizar($id, $data);
-        if (($data['estado'] ?? '') === 'Finalizada') {
-    $this->actividadModel->guardarResumenHistorico($id);
-    $this->actividadModel->guardarParticipantesHistoricos($id);
-}
+        $ok = $this->actividadModel->actualizar($id, $data);
 
-        header('Location: ' . BASE_URL . '/actividades');
+        if ($ok && $data['estado'] === 'Finalizada') {
+            $this->actividadModel->guardarResumenHistorico($id);
+            $this->actividadModel->guardarParticipantesHistoricos($id);
+        }
+
+        header('Location: ' . BASE_URL . '/actividades/ver?id=' . $id);
         exit;
     }
 
@@ -200,8 +226,14 @@ class ActividadesController
             exit;
         }
 
-        $this->actividadModel->crearParticipacionInicial($id);
-        $participantes = $this->actividadModel->obtenerParticipacionPorActividad($id);
+        $operadores = $this->actividadModel->obtenerOperadoresActivosReserva();
+
+        if ($actividad['estado'] === 'Finalizada') {
+            $participantes = $this->actividadModel->obtenerParticipacionHistorica($id);
+        } else {
+            $this->actividadModel->crearParticipacionInicial($id);
+            $participantes = $this->actividadModel->obtenerParticipacionPorActividad($id);
+        }
 
         $contenido = ROOT . '/app/views/admin/actividades/ver.php';
         require ROOT . '/app/views/admin/layouts/main.php';
@@ -212,14 +244,18 @@ class ActividadesController
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . BASE_URL . '/actividades/eliminar');
+            header('Location: ' . BASE_URL . '/actividades');
             exit;
         }
 
         $id = $_POST['id'] ?? null;
 
         if ($id) {
-            $this->actividadModel->eliminar($id);
+            $actividad = $this->actividadModel->obtenerPorId($id);
+
+            if ($actividad && $actividad['estado'] !== 'Finalizada') {
+                $this->actividadModel->eliminar($id);
+            }
         }
 
         header('Location: ' . BASE_URL . '/actividades');
@@ -239,6 +275,18 @@ class ActividadesController
         $operador_id  = (int) ($_POST['operador_id'] ?? 0);
         $estado       = trim($_POST['estado'] ?? 'Pendiente');
         $observacion  = trim($_POST['observacion'] ?? '');
+
+        $actividad = $this->actividadModel->obtenerPorId($actividad_id);
+
+        if (!$actividad) {
+            header('Location: ' . BASE_URL . '/actividades');
+            exit;
+        }
+
+        if ($actividad['estado'] === 'Finalizada') {
+            header('Location: ' . BASE_URL . '/actividades/ver?id=' . $actividad_id);
+            exit;
+        }
 
         if ($actividad_id > 0 && $operador_id > 0) {
             $this->actividadModel->actualizarEstadoParticipacion(

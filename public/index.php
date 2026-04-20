@@ -80,6 +80,7 @@ $router->post('/admin/incorporaciones/actualizarEstado', 'IncorporacionesControl
 $router->get('/admin/incorporaciones/eliminar', 'IncorporacionesController@eliminar');
 
 // ================= ADMIN OPERADORES =================
+
 $router->get('/operadores', 'OperadoresController@index');
 $router->get('/operadores/editar', 'OperadoresController@editar');
 $router->post('/operadores/actualizar', 'OperadoresController@actualizar');
@@ -128,7 +129,7 @@ $router->post('/cursos/activar', 'CursosController@activar');
 $router->post('/cursos/inactivar', 'CursosController@inactivar');
 $router->post('/cursos/eliminar', 'CursosController@eliminar');
 
-// ================= ACTIVIDADES =================
+// ================= ADMIN ACTIVIDADES =================
 $router->get('/actividades', 'ActividadesController@index');
 $router->get('/actividades/crear', 'ActividadesController@crear');
 $router->post('/actividades/guardar', 'ActividadesController@guardar');
@@ -138,6 +139,26 @@ $router->get('/actividades/ver', 'ActividadesController@ver');
 $router->post('/actividades/eliminar', 'ActividadesController@eliminar');
 $router->post('/actividades/cambiar-estado-participacion', 'ActividadesController@cambiarEstadoParticipacion');
 
+// =================ADMIN  NOVEDADESS =================
+$router->get('/novedades', 'NovedadesController@index');
+$router->get('/novedades/crear', 'NovedadesController@crear');
+$router->post('/novedades/guardar', 'NovedadesController@guardar');
+
+$router->get('/novedades/editar', 'NovedadesController@editar');
+$router->post('/novedades/actualizar', 'NovedadesController@actualizar');
+
+$router->get('/novedades/anular', 'NovedadesController@anular');
+$router->post('/novedades/guardarAnulacion', 'NovedadesController@guardarAnulacion');
+
+$router->get('/operador/misObservador', 'OperadorController@misObservador');
+
+
+// ================= OPERADOR WEB =================
+
+$router->get('/operador', 'OperadorController@index');
+$router->post('/operador/actualizarFoto', 'OperadorController@actualizarFoto');
+$router->post('/operador/actualizarPerfil', 'OperadorController@actualizarPerfil');
+$router->post('/operador/cambiarClave', 'OperadorController@cambiarClave');
 
 // --------------------------------------------
 // ▶️ EJECUTAR APLICACIÓN
