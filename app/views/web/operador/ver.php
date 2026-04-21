@@ -86,28 +86,6 @@ switch ($estado) {
         <div class="bg-[#0b1220] border border-[#1f2937] rounded-xl p-6">
             <h3 class="text-xl font-bold text-[#c8982e] mb-4">Resumen</h3>
 
-            <div class="space-y-3 text-sm">
-                <div class="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-3">
-                    <span class="text-gray-300">Convocados</span>
-                    <span class="font-bold text-white"><?= (int)($actividad['total_operadores'] ?? 0) ?></span>
-                </div>
-
-                <div class="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-3">
-                    <span class="text-gray-300">Asisten</span>
-                    <span class="font-bold text-green-400"><?= (int)($actividad['total_asisten'] ?? 0) ?></span>
-                </div>
-
-                <div class="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-3">
-                    <span class="text-gray-300">No asisten</span>
-                    <span class="font-bold text-red-400"><?= (int)($actividad['total_no_asisten'] ?? 0) ?></span>
-                </div>
-
-                <div class="flex items-center justify-between bg-[#111827] border border-[#374151] rounded-lg px-4 py-3">
-                    <span class="text-gray-300">Pendientes</span>
-                    <span class="font-bold text-yellow-400"><?= (int)($actividad['total_pendientes'] ?? 0) ?></span>
-                </div>
-            </div>
-
             <div class="mt-6">
                 <h4 class="text-base font-bold text-[#c8982e] mb-3">Participantes</h4>
 
@@ -130,9 +108,6 @@ switch ($estado) {
                                     <div>
                                         <div class="font-semibold text-white">
                                             <?= htmlspecialchars($p['nombre_completo'] ?? 'Operador') ?>
-                                        </div>
-                                        <div class="text-xs text-gray-400">
-                                            <?= htmlspecialchars($p['codigo_operador'] ?? $p['codigo'] ?? 'Sin código') ?>
                                         </div>
                                     </div>
 
@@ -165,4 +140,52 @@ switch ($estado) {
         </div>
 
     </div>
+    <?php
+$miEstado = $miParticipacion['estado_participacion'] ?? 'Pendiente';
+$miObservacion = $miParticipacion['observacion'] ?? '';
+$bloquearRespuesta = in_array(($actividad['estado'] ?? ''), ['Finalizada', 'Cancelada']);
+?>
+
+<div class="bg-[#111827] border border-[#374151] rounded-xl p-4 mb-6">
+    <h3 class="text-lg font-bold text-[#c8982e] mb-3">Mi participación</h3>
+
+    <div class="mb-3 text-sm text-gray-300">
+        Estado actual:
+        <span class="font-semibold text-white"><?= htmlspecialchars($miEstado) ?></span>
+    </div>
+
+    <?php if ($bloquearRespuesta): ?>
+        <div class="text-sm text-red-400">
+            Esta actividad ya no permite cambios de participación.
+        </div>
+    <?php else: ?>
+        <form action="<?= BASE_URL ?>/operador/responder-participacion" method="POST" class="space-y-4">
+            <input type="hidden" name="actividad_id" value="<?= (int) $actividad['id'] ?>">
+
+            <div>
+                <label class="block text-sm text-gray-300 mb-2">¿Participarás?</label>
+                <select name="estado"
+                        class="w-full rounded-lg bg-[#0b1220] border border-[#374151] text-white px-3 py-2 focus:border-[#c8982e] focus:outline-none">
+                    <option value="Asiste" <?= $miEstado === 'Asiste' ? 'selected' : '' ?>>Asiste</option>
+                    <option value="No asiste" <?= $miEstado === 'No asiste' ? 'selected' : '' ?>>No asiste</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-300 mb-2">Observación</label>
+                <textarea name="observacion"
+                          rows="3"
+                          class="w-full rounded-lg bg-[#0b1220] border border-[#374151] text-white px-3 py-2 focus:border-[#c8982e] focus:outline-none"
+                          placeholder="Escribe una observación opcional..."><?= htmlspecialchars($miObservacion) ?></textarea>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="px-4 py-2 rounded-lg bg-[#c8982e] hover:bg-[#d4a73a] text-black font-semibold transition">
+                    Guardar respuesta
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+</div>
 </div>

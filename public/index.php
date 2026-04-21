@@ -138,6 +138,7 @@ $router->post('/actividades/actualizar', 'ActividadesController@actualizar');
 $router->get('/actividades/ver', 'ActividadesController@ver');
 $router->post('/actividades/eliminar', 'ActividadesController@eliminar');
 $router->post('/actividades/cambiar-estado-participacion', 'ActividadesController@cambiarEstadoParticipacion');
+$router->post('/actividades/guardar-participaciones-masivas', 'ActividadesController@guardarParticipacionesMasivas');
 
 // =================ADMIN  NOVEDADESS =================
 $router->get('/novedades', 'NovedadesController@index');
@@ -164,6 +165,8 @@ $router->get('/operador/registrar-steam', 'OperadorController@registrarSteam');
 $router->post('/operador/guardar-steam', 'OperadorController@guardarSteam');
 $router->get('/operador/calendario', 'OperadorActividadesController@calendario');
 $router->get('/operador/ver', 'OperadorActividadesController@ver');
+$router->post('/operador/responder-participacion', 'OperadorActividadesController@responderParticipacion');
+$router->get('/operador/carnet', 'OperadorController@carnet');
 
 // --------------------------------------------
 // ▶️ EJECUTAR APLICACIÓN

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-04-2026 a las 20:49:45
+-- Tiempo de generación: 21-04-2026 a las 20:35:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -55,7 +55,8 @@ INSERT INTO `actividades` (`id`, `nombre`, `descripcion`, `imagen`, `tipo`, `fec
 (2, 'entrenamiento', '', NULL, 'entrenamiento', '2026-04-06', '23:49:00', 2, NULL, '2026-04-15 16:49:44', 'Finalizada', 4, 0, 0, 4, '2026-04-15 12:06:12'),
 (3, 'mision', '', NULL, 'mision', '2026-04-06', '23:50:00', 2, NULL, '2026-04-15 16:50:06', 'Finalizada', 4, 1, 0, 3, '2026-04-15 12:06:44'),
 (4, 'operacion', '', NULL, 'operacion', '2026-04-06', '23:50:00', 2, NULL, '2026-04-15 16:50:38', 'Finalizada', 4, 0, 0, 4, '2026-04-15 12:36:33'),
-(5, 'operacion', 'jaslasdakdñkañslkdñlaksdkñaskdñkñaskdñlkañlskdñlkasd', 'uploads/actividades/1776276484_Captura_de_pantalla_2026-03-03_093707.png', 'entrenamiento', '2026-04-15', '13:07:00', 2, NULL, '2026-04-15 18:08:04', 'Finalizada', 5, 3, 2, 0, '2026-04-15 13:08:45');
+(5, 'operacion', 'jaslasdakdñkañslkdñlaksdkñaskdñkñaskdñlkañlskdñlkasd', 'uploads/actividades/1776276484_Captura_de_pantalla_2026-03-03_093707.png', 'entrenamiento', '2026-04-15', '13:07:00', 2, NULL, '2026-04-15 18:08:04', 'Finalizada', 5, 3, 2, 0, '2026-04-15 13:08:45'),
+(6, 'Curso de Ametrallador', 'CURSO DE AMETRALLADOR', 'assets/img/actividades/1776781664_maxresdefault.jpg', 'curso', '2026-04-21', '20:52:00', 2, NULL, '2026-04-21 13:53:01', 'Finalizada', 6, 3, 2, 1, '2026-04-21 10:23:34');
 
 -- --------------------------------------------------------
 
@@ -96,7 +97,13 @@ INSERT INTO `actividad_operador` (`id`, `actividad_id`, `operador_id`, `estado`,
 (17, 5, 2, 'No asiste', '2026-04-15 13:08:38', NULL),
 (18, 5, 3, 'No asiste', '2026-04-15 13:08:34', NULL),
 (19, 5, 4, 'Asiste', '2026-04-15 13:08:24', NULL),
-(20, 5, 5, 'Asiste', '2026-04-15 13:08:28', NULL);
+(20, 5, 5, 'Asiste', '2026-04-15 13:08:28', NULL),
+(23, 6, 1, 'No asiste', '2026-04-21 10:23:12', NULL),
+(24, 6, 2, 'Asiste', '2026-04-21 10:23:12', NULL),
+(25, 6, 3, 'Asiste', '2026-04-21 10:23:12', NULL),
+(26, 6, 4, 'No asiste', '2026-04-21 10:23:12', NULL),
+(27, 6, 5, 'Asiste', '2026-04-21 10:23:12', NULL),
+(28, 6, 6, 'Pendiente', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -142,7 +149,13 @@ INSERT INTO `actividad_operador_historico` (`id`, `actividad_id`, `operador_id`,
 (26, 5, 2, 'CMI0002', 'SAUL FRAGUA NOVA', '3209839356', 'Activo', 'No asiste', NULL, '2026-04-15 13:08:38', '2026-04-15 13:08:45'),
 (27, 5, 3, 'CMI0003', 'prueba prueba', '3209839356', 'Activo', 'No asiste', NULL, '2026-04-15 13:08:34', '2026-04-15 13:08:45'),
 (28, 5, 4, 'CMI0004', 'FERNEY FRAGUA NOVA', '32098888888', 'Activo', 'Asiste', NULL, '2026-04-15 13:08:24', '2026-04-15 13:08:45'),
-(29, 5, 5, 'CMI0005', 'Pedro Picapiedra', '3209839356', 'Activo', 'Asiste', NULL, '2026-04-15 13:08:28', '2026-04-15 13:08:45');
+(29, 5, 5, 'CMI0005', 'Pedro Picapiedra', '3209839356', 'Activo', 'Asiste', NULL, '2026-04-15 13:08:28', '2026-04-15 13:08:45'),
+(32, 6, 1, 'CMI0001', 'ESTA CARGANDO EL MOTIVO', '32098888888', 'Activo', 'No asiste', NULL, '2026-04-21 10:23:12', '2026-04-21 10:23:34'),
+(33, 6, 2, 'CMI0002', 'SAUL FRAGUA NOVA', '3209839356', 'Activo', 'Asiste', NULL, '2026-04-21 10:23:12', '2026-04-21 10:23:34'),
+(34, 6, 3, 'CMI0003', 'prueba prueba', '3209839356', 'Activo', 'Asiste', NULL, '2026-04-21 10:23:12', '2026-04-21 10:23:34'),
+(35, 6, 4, 'CMI0004', 'FERNEY FRAGUA NOVA', '32098888888', 'Activo', 'No asiste', NULL, '2026-04-21 10:23:12', '2026-04-21 10:23:34'),
+(36, 6, 5, 'CMI0005', 'Pedro Picapiedra', '3209839356', 'Activo', 'Asiste', NULL, '2026-04-21 10:23:12', '2026-04-21 10:23:34'),
+(37, 6, 6, 'CMI0006', 'SAUL FRAGUA NOVA', '3209839356', 'Activo', 'Pendiente', NULL, NULL, '2026-04-21 10:23:34');
 
 -- --------------------------------------------------------
 
@@ -304,12 +317,12 @@ CREATE TABLE `operadores` (
 --
 
 INSERT INTO `operadores` (`id`, `codigo`, `clave`, `foto_operador`, `nombre_completo`, `alias`, `fecha_nacimiento`, `rango_id`, `pais`, `telefono`, `discord`, `steam`, `rol`, `fecha_ultimo_ascenso`, `fecha_modificacion`, `usuario_actualiza`, `estado`) VALUES
-(1, 'CMI0001', '$2y$10$315fHvzjZQzvFytO1fAvm./cd593ltBol307SszQOkdCWLTGRucsS', 'esta_cargando_el_motivo.png', 'ESTA CARGANDO EL MOTIVO', NULL, '2025-10-10', NULL, 'Argentina', '32098888888', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:16', 0, 'Activo'),
-(2, 'CMI0002', '123', '1776432714_Captura_de_pantalla_2026-04-16_124409.png', 'SAUL FRAGUA NOVA', NULL, '2001-04-10', 4, 'Colombia', '3209839356', NULL, NULL, 'mando', '1988-04-10', '2026-04-19 12:34:00', 0, 'Activo'),
-(3, 'CMI0003', '$2y$10$E4c9i2GOkK.lZLmsqqv9rerZkR3r.EpQVhFM3TEsem7fk3aoUPBDa', NULL, 'prueba prueba', NULL, '1988-10-10', NULL, 'Colombia', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:06', 0, 'Activo'),
-(4, 'CMI0004', '$2y$10$WeP5VV5WQYfhAr1Bw11pOeRX9yssgzJZb4/7PSfDK5aTDBlGlfZoq', 'ferney_fragua_nova.png', 'FERNEY FRAGUA NOVA', NULL, '1988-04-10', 4, 'Argentina', '32098888888', NULL, NULL, 'operador', '2026-04-10', '2026-04-15 18:11:05', 0, 'Activo'),
-(5, 'CMI0005', '$2y$10$LR3TB2d56vQtQN6JfbrgO.xxeVqmKUrihj613xuXUkdN8ywVjCULm', 'pedro_picapiedra.jpeg', 'Pedro Picapiedra', NULL, '1980-10-10', 4, 'Nicaragua', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-15 18:11:04', 0, 'Activo'),
-(6, 'CMI0006', '$2y$10$kfqhpWz59y2b0usH97uBju.St/0pZFVApItXV8qRUlXVcxXq/iMr6', 'saul_fragua_nova.png', 'SAUL FRAGUA NOVA', 'Fragua', '1988-04-10', 5, 'Colombia', '3209839356', 'Kratos', 'sfragua', 'operador', '2026-04-20', '2026-04-20 18:46:36', 2, 'Activo');
+(1, 'CMI0001', '$2y$10$315fHvzjZQzvFytO1fAvm./cd593ltBol307SszQOkdCWLTGRucsS', 'esta_cargando_el_motivo.png', 'ESTA CARGANDO EL MOTIVO', NULL, '2025-10-10', NULL, 'Argentina', '32098888888', NULL, NULL, 'operador', NULL, '2026-04-21 15:24:00', 2, 'Retirado'),
+(2, 'CMI0002', '123', 'saul_fragua_nova.jpg', 'SAUL FRAGUA NOVA', '', '1988-04-10', 4, 'Colombia', '3209839356', '', 'qwerty', 'mando', '1988-04-10', '2026-04-21 18:05:21', 2, 'Activo'),
+(3, 'CMI0003', '$2y$10$E4c9i2GOkK.lZLmsqqv9rerZkR3r.EpQVhFM3TEsem7fk3aoUPBDa', NULL, 'prueba prueba', NULL, '1988-10-10', NULL, 'Colombia', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-21 15:23:57', 2, 'Retirado'),
+(4, 'CMI0004', '$2y$10$WeP5VV5WQYfhAr1Bw11pOeRX9yssgzJZb4/7PSfDK5aTDBlGlfZoq', 'ferney_fragua_nova.png', 'FERNEY FRAGUA NOVA', NULL, '1988-04-10', 4, 'Argentina', '32098888888', NULL, NULL, 'operador', '2026-04-10', '2026-04-21 15:23:56', 2, 'Retirado'),
+(5, 'CMI0005', '$2y$10$LR3TB2d56vQtQN6JfbrgO.xxeVqmKUrihj613xuXUkdN8ywVjCULm', 'pedro_picapiedra.jpeg', 'Pedro Picapiedra', NULL, '1980-10-10', 4, 'Nicaragua', '3209839356', NULL, NULL, 'operador', NULL, '2026-04-21 15:23:55', 2, 'Retirado'),
+(6, 'CMI0006', '$2y$10$kfqhpWz59y2b0usH97uBju.St/0pZFVApItXV8qRUlXVcxXq/iMr6', 'saul_fragua_nova.png', 'SAUL FRAGUA NOVA', 'Fragua', '1988-04-10', 5, 'Colombia', '3209839356', 'Kratos', 'sfragua', 'operador', '2026-04-20', '2026-04-21 15:23:53', 2, 'Retirado');
 
 -- --------------------------------------------------------
 
@@ -600,19 +613,19 @@ ALTER TABLE `unidades`
 -- AUTO_INCREMENT de la tabla `actividades`
 --
 ALTER TABLE `actividades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `actividad_operador`
 --
 ALTER TABLE `actividad_operador`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `actividad_operador_historico`
 --
 ALTER TABLE `actividad_operador_historico`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`

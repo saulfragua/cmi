@@ -1,4 +1,4 @@
-<a href="https://wa.me/573001234567"
+<a href="https://chat.whatsapp.com/DtlLRO5L8ll73mp4jxxpXd"
    target="_blank"
    class="fixed bottom-6 right-6 z-50
           flex items-center gap-3

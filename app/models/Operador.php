@@ -712,4 +712,28 @@ class Operador
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+public function obtenerPorIdCarnet($id)
+{
+    $sql = "SELECT 
+    o.*,
+    r.nombre AS rango_nombre,
+    e.nombre AS especialidad_nombre,
+    u.nombre AS unidad_nombre
+FROM operadores o
+LEFT JOIN rangos r ON r.id = o.rango_id
+LEFT JOIN operador_especialidad oe ON oe.operador_id = o.id AND oe.principal = 1
+LEFT JOIN especialidades e ON e.id = oe.especialidad_id
+LEFT JOIN operador_unidad ou ON ou.operador_id = o.id
+LEFT JOIN unidades u ON u.id = ou.unidad_id
+WHERE o.id = :id
+LIMIT 1";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 }

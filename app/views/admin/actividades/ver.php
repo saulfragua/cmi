@@ -223,108 +223,108 @@ $esFinalizada = $actividad['estado'] === 'Finalizada';
             </p>
         </div>
 
-        <table class="w-full text-sm">
-            <thead class="bg-[#111827] text-[#c8982e] uppercase text-xs">
-                <tr>
-                    <th class="px-4 py-3">Código</th>
-                    <th class="px-4 py-3">Operador</th>
-                    <th class="px-4 py-3">Teléfono</th>
-                    <th class="px-4 py-3">Estado operador</th>
-                    <th class="px-4 py-3">Estado actividad</th>
-                    <th class="px-4 py-3">Fecha respuesta</th>
-                    <th class="px-4 py-3">Observación</th>
-                    <th class="px-4 py-3 text-center">Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($participantes)): ?>
-                    <?php foreach ($participantes as $p): ?>
-                        <?php
-                        $codigoMostrar = $p['codigo'] ?? $p['codigo_operador'] ?? '---';
-                        $nombreMostrar = $p['nombre_completo'] ?? '---';
-                        $telefonoMostrar = $p['telefono'] ?? '---';
-                        $estadoOperadorMostrar = $p['estado_operador'] ?? '---';
-                        $estadoParticipacionMostrar = $p['estado_participacion'] ?? $p['estado'] ?? 'Pendiente';
-                        $fechaRespuestaMostrar = $p['fecha_respuesta'] ?? null;
-                        $observacionMostrar = $p['observacion'] ?? '';
-                        ?>
-                        <tr class="border-t border-[#1f2937] hover:bg-[#0f172a] transition">
-                            <td class="px-4 py-3"><?= htmlspecialchars($codigoMostrar) ?></td>
-                            <td class="px-4 py-3 font-semibold"><?= htmlspecialchars($nombreMostrar) ?></td>
-                            <td class="px-4 py-3"><?= htmlspecialchars($telefonoMostrar) ?></td>
+<form action="<?= BASE_URL ?>/actividades/guardar-participaciones-masivas" method="POST">
+    <input type="hidden" name="actividad_id" value="<?= $actividad['id'] ?>">
 
-                            <td class="px-4 py-3">
-                                <span class="px-2 py-1 rounded-full text-xs font-bold
-                                    <?= $estadoOperadorMostrar === 'Activo' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300' ?>">
-                                    <?= htmlspecialchars($estadoOperadorMostrar) ?>
-                                </span>
-                            </td>
+    <table class="w-full text-sm">
+        <thead class="bg-[#111827] text-[#c8982e] uppercase text-xs">
+            <tr>
+                <th class="px-4 py-3">Código</th>
+                <th class="px-4 py-3">Operador</th>
+                <th class="px-4 py-3">Teléfono</th>
+                <th class="px-4 py-3">Estado operador</th>
+                <th class="px-4 py-3">Estado actividad</th>
+                <th class="px-4 py-3">Fecha respuesta</th>
+                <th class="px-4 py-3 text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($participantes)): ?>
+                <?php foreach ($participantes as $p): ?>
+                    <?php
+                    $codigoMostrar = $p['codigo'] ?? $p['codigo_operador'] ?? '---';
+                    $nombreMostrar = $p['nombre_completo'] ?? '---';
+                    $telefonoMostrar = $p['telefono'] ?? '---';
+                    $estadoOperadorMostrar = $p['estado_operador'] ?? '---';
+                    $estadoParticipacionMostrar = $p['estado_participacion'] ?? $p['estado'] ?? 'Pendiente';
+                    $fechaRespuestaMostrar = $p['fecha_respuesta'] ?? null;
+                    ?>
+                    <tr class="border-t border-[#1f2937] hover:bg-[#0f172a] transition">
+                        <td class="px-4 py-3"><?= htmlspecialchars($codigoMostrar) ?></td>
+                        <td class="px-4 py-3 font-semibold"><?= htmlspecialchars($nombreMostrar) ?></td>
+                        <td class="px-4 py-3"><?= htmlspecialchars($telefonoMostrar) ?></td>
 
-                            <td class="px-4 py-3">
-                                <span class="px-2 py-1 rounded-full text-xs font-bold
-                                    <?php
-                                        switch ($estadoParticipacionMostrar) {
-                                            case 'Asiste': echo 'bg-green-900 text-green-300'; break;
-                                            case 'No asiste': echo 'bg-red-900 text-red-300'; break;
-                                            default: echo 'bg-yellow-900 text-yellow-300'; break;
-                                        }
-                                    ?>">
-                                    <?= htmlspecialchars($estadoParticipacionMostrar) ?>
-                                </span>
-                            </td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs font-bold
+                                <?= $estadoOperadorMostrar === 'Activo' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300' ?>">
+                                <?= htmlspecialchars($estadoOperadorMostrar) ?>
+                            </span>
+                        </td>
 
-                            <td class="px-4 py-3 text-xs text-gray-300">
-                                <?= !empty($fechaRespuestaMostrar) ? htmlspecialchars($fechaRespuestaMostrar) : 'Sin respuesta' ?>
-                            </td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs font-bold
+                                <?php
+                                    switch ($estadoParticipacionMostrar) {
+                                        case 'Asiste': echo 'bg-green-900 text-green-300'; break;
+                                        case 'No asiste': echo 'bg-red-900 text-red-300'; break;
+                                        default: echo 'bg-yellow-900 text-yellow-300'; break;
+                                    }
+                                ?>">
+                                <?= htmlspecialchars($estadoParticipacionMostrar) ?>
+                            </span>
+                        </td>
 
-                            <td class="px-4 py-3 text-xs text-gray-300">
-                                <?= !empty($observacionMostrar) ? htmlspecialchars($observacionMostrar) : '---' ?>
-                            </td>
+                        <td class="px-4 py-3 text-xs text-gray-300">
+                            <?= !empty($fechaRespuestaMostrar) ? htmlspecialchars($fechaRespuestaMostrar) : 'Sin respuesta' ?>
+                        </td>
 
-                            <td class="px-4 py-3">
-                                <?php if (!$esFinalizada): ?>
-                                    <form action="<?= BASE_URL ?>/actividades/cambiar-estado-participacion"
-                                          method="POST"
-                                          class="flex flex-col gap-2 min-w-[180px]">
-                                        <input type="hidden" name="actividad_id" value="<?= $actividad['id'] ?>">
-                                        <input type="hidden" name="operador_id" value="<?= $p['operador_id'] ?>">
+                        <td class="px-4 py-3">
+                            <?php if (!$esFinalizada): ?>
+                                <div class="flex flex-col gap-2 min-w-[180px]">
+                                    <label class="flex items-center gap-2 text-xs text-green-400 font-semibold cursor-pointer">
+                                        <input type="radio"
+                                               name="participacion[<?= (int)$p['operador_id'] ?>]"
+                                               value="Asiste"
+                                               class="accent-green-500"
+                                               <?= $estadoParticipacionMostrar === 'Asiste' ? 'checked' : '' ?>>
+                                        Asiste
+                                    </label>
 
-                                        <select name="estado"
-                                                class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
-                                            <option value="Pendiente" <?= $estadoParticipacionMostrar === 'Pendiente' ? 'selected' : '' ?>>Pendiente</option>
-                                            <option value="Asiste" <?= $estadoParticipacionMostrar === 'Asiste' ? 'selected' : '' ?>>Asiste</option>
-                                            <option value="No asiste" <?= $estadoParticipacionMostrar === 'No asiste' ? 'selected' : '' ?>>No asiste</option>
-                                        </select>
-
-                                        <input type="text"
-                                               name="observacion"
-                                               value="<?= htmlspecialchars($observacionMostrar) ?>"
-                                               placeholder="Observación"
-                                               class="bg-[#111827] border border-[#374151] rounded px-2 py-2 text-white text-xs">
-
-                                        <button type="submit"
-                                                class="px-3 py-2 rounded bg-[#c8982e] text-black text-xs font-bold hover:opacity-90">
-                                            Guardar
-                                        </button>
-                                    </form>
-                                <?php else: ?>
-                                    <div class="min-w-[180px] text-center px-3 py-3 rounded bg-gray-800 text-gray-400 text-xs font-bold cursor-not-allowed">
-                                        Histórico
-                                    </div>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-gray-400">
-                            <?= $esFinalizada
-                                ? 'No hay histórico de operadores guardado para esta actividad.'
-                                : 'No hay operadores relacionados para esta actividad.' ?>
+                                    <label class="flex items-center gap-2 text-xs text-red-400 font-semibold cursor-pointer">
+                                        <input type="radio"
+                                               name="participacion[<?= (int)$p['operador_id'] ?>]"
+                                               value="No asiste"
+                                               class="accent-red-500"
+                                               <?= $estadoParticipacionMostrar === 'No asiste' ? 'checked' : '' ?>>
+                                        No asiste
+                                    </label>
+                                </div>
+                            <?php else: ?>
+                                <div class="min-w-[180px] text-center px-3 py-3 rounded bg-gray-800 text-gray-400 text-xs font-bold cursor-not-allowed">
+                                    Actividad finalizada
+                                </div>
+                            <?php endif; ?>
                         </td>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7" class="px-4 py-6 text-center text-gray-400">
+                        No hay participantes registrados para esta actividad.
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+
+    <?php if (!$esFinalizada && !empty($participantes)): ?>
+        <div class="flex justify-end mt-6 px-4 pb-4">
+            <button type="submit"
+                    class="px-4 py-2 rounded bg-[#c8982e] text-black text-sm font-bold hover:opacity-90">
+                Guardar
+            </button>
+        </div>
+    <?php endif; ?>
+</form>
     </div>
 </div>

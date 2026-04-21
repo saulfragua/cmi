@@ -43,7 +43,11 @@
         }
     }
     ?>
-
+            <a href="<?= BASE_URL ?>/operador"
+           class="px-4 py-2 rounded-lg bg-[#111827] border border-[#374151] hover:border-[#c8982e] text-white text-sm">
+            ← Volver
+        </a>
+    
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div class="border-l-4 border-[#c8982e] pl-4">
             <h1 class="text-2xl font-bold tracking-widest text-[#c8982e]">

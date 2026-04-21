@@ -22,7 +22,7 @@ $codigo = $operador['codigo'] ?? 'N/A';
                         Comando Militar Internacional
                     </p>
                     <h1 class="text-2xl md:text-3xl font-bold">
-                        Mis observador
+                        Mi observador
                     </h1>
                     <p class="text-sm text-[#facc15]/80 mt-1">
                         Novedades registradas del operador <?= htmlspecialchars($nombre) ?> - <?= htmlspecialchars($codigo) ?>

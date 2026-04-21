@@ -86,13 +86,18 @@ $qrTexto = urlencode($codigo);
 
                 <div class="flex items-center gap-3 flex-wrap">
 
+<a href="<?= BASE_URL ?>/operador/carnet"
+   class="px-4 py-2 rounded-lg border border-[#c8982e]/30 text-[#c8982e] bg-black hover:bg-[#1f2937] transition">
+    Mi carnet
+</a>
+
                     <a href="<?= BASE_URL ?>/operador/calendario"
                         class="px-4 py-2 rounded-lg border border-[#c8982e]/30 text-[#c8982e] bg-black hover:bg-[#1f2937] transition">
-                        Calendario
+                        Mi calendario
                     </a>
                     <a href="<?= BASE_URL ?>/operador/misObservador"
                         class="px-4 py-2 rounded-lg border border-blue-500/30 text-blue-300 bg-black hover:bg-[#1f2937] transition">
-                        Mis observador
+                        Mi observador
                     </a>
 
                     <a href="<?= BASE_URL ?>/logout"
