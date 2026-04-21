@@ -150,15 +150,20 @@ $router->post('/novedades/actualizar', 'NovedadesController@actualizar');
 $router->get('/novedades/anular', 'NovedadesController@anular');
 $router->post('/novedades/guardarAnulacion', 'NovedadesController@guardarAnulacion');
 
-$router->get('/operador/misObservador', 'OperadorController@misObservador');
+
 
 
 // ================= OPERADOR WEB =================
 
 $router->get('/operador', 'OperadorController@index');
+$router->get('/operador/misObservador', 'OperadorController@misObservador');
 $router->post('/operador/actualizarFoto', 'OperadorController@actualizarFoto');
 $router->post('/operador/actualizarPerfil', 'OperadorController@actualizarPerfil');
 $router->post('/operador/cambiarClave', 'OperadorController@cambiarClave');
+$router->get('/operador/registrar-steam', 'OperadorController@registrarSteam');
+$router->post('/operador/guardar-steam', 'OperadorController@guardarSteam');
+$router->get('/operador/calendario', 'OperadorActividadesController@calendario');
+$router->get('/operador/ver', 'OperadorActividadesController@ver');
 
 // --------------------------------------------
 // ▶️ EJECUTAR APLICACIÓN

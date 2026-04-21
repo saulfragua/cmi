@@ -1,33 +1,44 @@
 <?php
 
-class DashboardController {
+require_once ROOT . '/app/models/Dashboard.php';
 
-    public function index() {
+class DashboardController
+{
+    private $model;
 
-        // Iniciar sesión
+    public function __construct()
+    {
+        $this->model = new Dashboard();
+    }
+
+    public function index()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Verificar sesión
         if (!isset($_SESSION['user'])) {
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
 
-        // Verificar rol (admin o mando)
         if ($_SESSION['user']['tipo'] !== 'admin' && $_SESSION['user']['tipo'] !== 'mando') {
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
 
-        // Datos para la vista
         $usuario = $_SESSION['user'];
 
-        // 👇 DEFINIR CONTENIDO DINÁMICO
+        $totalOperadores = $this->model->obtenerTotalOperadores();
+        $operadoresPorEstado = $this->model->obtenerOperadoresPorEstado();
+        $operadoresPorRol = $this->model->obtenerOperadoresPorRol();
+        $operadoresPorRango = $this->model->obtenerOperadoresPorRango();
+
+        $totalFormularios = $this->model->obtenerTotalFormularios();
+        $formulariosPorEstado = $this->model->obtenerFormulariosPorEstado();
+
         $contenido = ROOT . '/app/views/admin/dashboard/index.php';
 
-        // 👇 CARGAR LAYOUT PRINCIPAL
         require ROOT . '/app/views/admin/layouts/main.php';
     }
 }

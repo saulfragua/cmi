@@ -165,4 +165,68 @@ class OperadorController
 
     header('Location: ' . BASE_URL . '/operador?success=clave_actualizada');
 }
+
+public function registrarSteam()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['user'])) {
+        header('Location: ' . BASE_URL . '/login');
+        exit;
+    }
+
+    require_once ROOT . '/app/models/AuthModel.php';
+    $modelo = new AuthModel();
+
+    $id = $_SESSION['user']['id'];
+
+    // 🔥 CONSULTA REAL A BD
+    $usuario = $modelo->obtenerPorId($id);
+
+    // ✅ Si ya tiene steam → NO mostrar formulario
+    if (!empty(trim($usuario['steam'] ?? ''))) {
+        header('Location: ' . BASE_URL . '/operador');
+        exit;
+    }
+
+    require ROOT . '/app/views/web/operador/registrar_steam.php';
+}
+
+public function guardarSteam()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['user'])) {
+        header('Location: ' . BASE_URL . '/login');
+        exit;
+    }
+
+    $steam = trim($_POST['steam'] ?? '');
+    $id = $_SESSION['user']['id'] ?? null;
+
+    if (empty($id) || empty($steam)) {
+        header('Location: ' . BASE_URL . '/operador/registrar-steam?error=vacío');
+        exit;
+    }
+
+    require_once ROOT . '/app/models/AuthModel.php';
+    $modelo = new AuthModel();
+
+    $guardado = $modelo->actualizarSteam($id, $steam);
+
+    if ($guardado) {
+        $_SESSION['user']['steam'] = $steam;
+
+        // lo envías al perfil o al panel
+        header('Location: ' . BASE_URL . '/operador');
+        exit;
+    }
+
+    header('Location: ' . BASE_URL . '/operador/registrar-steam?error=guardar');
+    exit;
+}
 }
