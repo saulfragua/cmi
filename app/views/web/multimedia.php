@@ -17,7 +17,7 @@
 
             <!-- ITEM -->
             <div class="bg-black/70 border border-[#222] rounded-lg overflow-hidden hover:scale-105 transition">
-                <img src="/cmi/public/assets/img/multimedia/imagenes/noturnas.jpg" class="w-full h-56 object-cover">
+                <img src="<?= BASE_URL ?>/assets/img/multimedia/imagenes/noturnas.jpg" class="w-full h-56 object-cover">
                 <div class="p-4">
                     <h3 class="text-white font-bold tracking-widest">
                         OPERACIÓN NOCTURNA
@@ -27,7 +27,7 @@
 
             <!-- ITEM -->
             <div class="bg-black/70 border border-[#222] rounded-lg overflow-hidden hover:scale-105 transition">
-                <img src="/cmi/public/assets/img/multimedia/imagenes/tactico.jpg" class="w-full h-56 object-cover">
+                <img src="<?= BASE_URL ?>/assets/img/multimedia/imagenes/tactico.jpg" class="w-full h-56 object-cover">
                 <div class="p-4">
                     <h3 class="text-white font-bold tracking-widest">
                         ENTRENAMIENTO TÁCTICO
@@ -37,7 +37,7 @@
 
             <!-- ITEM -->
             <div class="bg-black/70 border border-[#222] rounded-lg overflow-hidden hover:scale-105 transition">
-                <img src="/cmi/public/assets/img/multimedia/imagenes/despliegues.jpg" class="w-full h-56 object-cover">
+                <img src="<?= BASE_URL ?>/assets/img/multimedia/imagenes/despliegues.jpg" class="w-full h-56 object-cover">
                 <div class="p-4">
                     <h3 class="text-white font-bold tracking-widest">
                         DESPLIEGUE ESPECIAL

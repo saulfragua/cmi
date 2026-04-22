@@ -11,7 +11,7 @@
           hover:shadow-[0_0_20px_rgba(37,211,102,0.8)]">
 
     <!-- LOGO RECLUTAMIENTO -->
-    <img src="/cmi/public/assets/img/unidades/RECLUTAMIENTO.png" 
+    <img src="<?= BASE_URL ?>/assets/img/unidades/RECLUTAMIENTO.png" 
          alt="Reclutamiento" 
          class="w-12 h-12 object-contain"
          onerror="this.style.display='none';">

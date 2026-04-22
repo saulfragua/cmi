@@ -176,7 +176,7 @@
 
             <!-- Imagen del reglamento -->
             <div class="flex justify-center">
-                <img src="/cmi/public/assets/img/normas/normas de convivencia.jpeg" alt="Normas de Convivencia"
+                <img src="<?= BASE_URL ?>/assets/img/normas/normas de convivencia.jpeg" alt="Normas de Convivencia"
                     class="max-w-full h-auto rounded-lg shadow-2xl"
                     onerror="this.style.display='none'; alert('Error al cargar la imagen del reglamento');">
             </div>
@@ -204,10 +204,10 @@
 
 <!-- SCRIPTS -->
 
-<script src="/cmi/public/assets/js/carousel.js"></script>
-<script src="/cmi/public/assets/js/incorporate.js"></script>
-<script src="/cmi/public/assets/js/login.js"></script>
-<script src="/cmi/public/assets/js/navbar.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/carousel.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/incorporate.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/login.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/navbar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>

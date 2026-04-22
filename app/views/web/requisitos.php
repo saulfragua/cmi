@@ -292,7 +292,7 @@
         rounded-lg p-6 shadow-[0_0_30px_rgba(200,152,46,0.3)] overflow-hidden">
 
                         <!-- TEXTURA -->
-                        <div class="absolute inset-0 bg-[url('/public/assets/img/texturas/papel.jpg')] opacity-10">
+                        <div class="absolute inset-0 bg-[url('<?= BASE_URL ?>/assets/img/texturas/papel.jpg')] opacity-10">
                         </div>
 
                         <div class="relative z-10">
@@ -351,7 +351,7 @@
         rounded-lg p-6 shadow-[0_0_20px_rgba(200,152,46,0.2)] overflow-hidden">
 
                         <!-- TEXTURA -->
-                        <div class="absolute inset-0 bg-[url('/public/assets/img/texturas/papel.jpg')] opacity-10">
+                        <div class="absolute inset-0 bg-[url('<?= BASE_URL ?>/assets/img/texturas/papel.jpg')] opacity-10">
                         </div>
 
                         <div class="relative z-10">

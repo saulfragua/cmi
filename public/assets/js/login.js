@@ -4,7 +4,7 @@ function abrirLogin() {
     const contenido = document.getElementById("contenidoLogin");
 
     // 🔥 CARGAR VISTA DESDE PHP
-    fetch("/cmi/public/index.php?url=login")
+    fetch("<?= BASE_URL ?>/index.php?url=login")
         .then(res => res.text())
         .then(html => {
             contenido.innerHTML = html;

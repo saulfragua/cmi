@@ -18,7 +18,7 @@
 
         <!-- Menú izquierdo - Desktop -->
         <nav class="hidden md:flex gap-6 lg:gap-10">
-            <a href="/cmi/public/"
+            <a href="<?= BASE_URL ?>/"
             data-link
             class="nav-link relative text-sm text-[#c8982e] lg:text-base
                     tracking-widest
@@ -60,7 +60,7 @@
         <!-- Logo central -->
         <div class="flex items-center justify-center flex-1 md:flex-none">
             <img 
-                src="/cmi/public/assets/img/logos/escudo-Photoroom.png" 
+                src="<?= BASE_URL ?>/assets/img/logos/escudo-Photoroom.png" 
                 alt="Escudo Militar"
                 class="relative z-50 w-1 h-12 md:w-auto md:h-auto
                        transition-all duration-300
@@ -127,7 +127,7 @@
     </button>
 
     <!-- LINKS -->
-    <a href="/cmi/public/"
+    <a href="<?= BASE_URL ?>/"
        class="text-white text-xl tracking-widest hover:text-[#c8982e]">
         INICIO
     </a>

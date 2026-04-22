@@ -55,7 +55,7 @@
             <!-- IMAGEN / VISUAL -->
             <div class="relative">
 
-                <img src="/cmi/public/assets/img/logos/escudo-Photoroom.png"
+                <img src="<?= BASE_URL ?>/assets/img/logos/escudo-Photoroom.png"
      class="rounded-lg border border-[#2a2a2a] shadow-[0_0_30px_rgba(0,0,0,0.8)] w-full h-[450px] object-contain bg-black p-6">
 
                 <!-- Overlay -->
